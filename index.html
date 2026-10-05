@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>關西八日｜互動時序表</title>
+  <style>
+    :root {
+      --ink: #e9e2d5;
+      --muted: #9da8b6;
+      --paper: #121c2a;
+      --panel: rgba(25, 38, 54, .82);
+      --line: rgba(234, 226, 213, .13);
+      --copper: #e17b57;
+      --gold: #d4b56f;
+      --jade: #78a79d;
+      --blue: #75a8c8;
+      --violet: #b697c6;
+      --shadow: 0 22px 60px rgba(0, 0, 0, .24);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 78% 2%, rgba(225,123,87,.14), transparent 31rem),
+        radial-gradient(circle at 6% 30%, rgba(120,167,157,.12), transparent 27rem),
+        linear-gradient(135deg, #0c1420 0%, #101a28 54%, #0e1724 100%);
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      min-height: 100vh;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: 0; pointer-events: none; opacity: .13;
+      background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 4px);
+      mix-blend-mode: soft-light;
+    }
+    .shell { width: min(1240px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 76px; }
+    .eyebrow { color: var(--copper); text-transform: uppercase; letter-spacing: .18em; font-size: 11px; font-weight: 800; }
+    h1, h2, h3, .display { font-family: "Iowan Old Style", "Noto Serif TC", "PingFang TC", serif; font-weight: 500; letter-spacing: -.03em; }
+    h1 { font-size: clamp(36px, 7vw, 78px); line-height: .98; margin: 12px 0 18px; max-width: 760px; }
+    h2 { font-size: clamp(24px, 3vw, 38px); margin: 0; }
+    h3 { font-size: 18px; margin: 0 0 6px; }
+    p { line-height: 1.7; }
+    .hero { display: grid; grid-template-columns: 1.3fr .7fr; gap: 28px; align-items: end; padding: 22px 0 38px; }
+    .hero-copy { position: relative; }
+    .hero-copy::after { content: "08"; position: absolute; right: 4%; top: -20%; color: rgba(225,123,87,.11); font-family: Georgia, serif; font-size: 200px; line-height: 1; z-index: -1; }
+    .hero-sub { color: var(--muted); max-width: 650px; margin: 0; font-size: 15px; }
+    .hero-note { border-left: 1px solid var(--copper); padding: 10px 0 10px 18px; color: #d8d0c2; font-size: 13px; line-height: 1.75; }
+    .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 8px 0 22px; }
+    .toolbar-block { display: flex; gap: 9px; align-items: center; flex-wrap: wrap; }
+    .toolbar-label { color: var(--gold); font-size: 11px; letter-spacing: .08em; font-weight: 800; white-space: nowrap; }
+    .switch { display: inline-flex; padding: 4px; border: 1px solid var(--line); background: rgba(4,8,13,.28); border-radius: 999px; }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    .switch button { border: 0; background: transparent; padding: 9px 15px; border-radius: 999px; color: var(--muted); font-size: 13px; }
+    .switch button.active { background: var(--copper); color: #171116; font-weight: 800; }
+    .hint { color: var(--muted); font-size: 12px; }
+    .layout { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 22px; align-items: start; }
+    .day-nav { position: sticky; top: 18px; display: grid; gap: 8px; }
+    .day-nav button { text-align: left; border: 1px solid transparent; background: rgba(255,255,255,.035); border-radius: 13px; padding: 12px 14px; transition: .22s ease; }
+    .day-nav button:hover { border-color: rgba(225,123,87,.45); transform: translateX(2px); }
+    .day-nav button.active { border-color: var(--copper); background: rgba(225,123,87,.14); }
+    .day-nav strong { display: block; font-size: 15px; }
+    .day-nav small { color: var(--muted); font-size: 11px; }
+    .panel { background: linear-gradient(140deg, rgba(24,37,53,.88), rgba(14,24,37,.78)); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
+    .day-head { padding: 26px 28px 22px; border-bottom: 1px solid var(--line); }
+    .day-head-top { display: flex; justify-content: space-between; gap: 20px; align-items: start; }
+    .day-date { color: var(--gold); font-size: 13px; letter-spacing: .08em; }
+    .day-title { margin: 7px 0 7px; }
+    .day-summary { color: var(--muted); margin: 0; max-width: 760px; font-size: 14px; }
+    .route { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 17px; }
+    .route span, .tag { padding: 6px 9px; border-radius: 999px; background: rgba(255,255,255,.07); color: #cbd3dc; font-size: 11px; }
+    .tag { border: 1px solid rgba(212,181,111,.35); color: var(--gold); background: rgba(212,181,111,.08); }
+    .timeline-wrap { padding: 22px 28px 28px; }
+    .section-label { color: var(--muted); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 800; margin-bottom: 13px; }
+    .timeline { position: relative; display: grid; gap: 10px; }
+    .timeline::before { content: ""; position: absolute; left: 88px; top: 8px; bottom: 8px; width: 1px; background: linear-gradient(var(--copper), rgba(225,123,87,.08)); }
+    .event { display: grid; grid-template-columns: 76px 24px minmax(0, 1fr); gap: 0; align-items: stretch; position: relative; }
+    .event-time { color: var(--gold); font-variant-numeric: tabular-nums; padding-top: 15px; font-size: 12px; text-align: right; padding-right: 14px; }
+    .event-dot { display: grid; place-items: start center; padding-top: 17px; z-index: 1; }
+    .event-dot::before { content: ""; width: 9px; height: 9px; border: 2px solid var(--copper); background: var(--paper); border-radius: 50%; }
+    .event-card { border: 1px solid var(--line); border-radius: 14px; padding: 13px 15px; background: rgba(255,255,255,.035); transition: transform .22s ease, border-color .22s ease, background .22s ease; }
+    .event-card:hover { transform: translateX(4px); border-color: rgba(225,123,87,.48); background: rgba(225,123,87,.07); }
+    .event-card h3 { margin-bottom: 4px; }
+    .event-card p { color: var(--muted); margin: 0; font-size: 13px; }
+    .event-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+    .event-transport { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; padding-top: 9px; border-top: 1px dashed rgba(234,226,213,.13); color: #c4ced7; font-size: 12px; line-height: 1.55; }
+    .event-transport b { flex: 0 0 auto; color: var(--blue); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; padding-top: 1px; }
+    .event-transport span { color: #aeb9c4; }
+    .kind-move .event-dot::before { border-color: var(--blue); }
+    .kind-food .event-dot::before { border-color: var(--copper); }
+    .kind-place .event-dot::before { border-color: var(--jade); }
+    .kind-shop .event-dot::before { border-color: var(--violet); }
+    .kind-event .event-dot::before { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(212,181,111,.11); }
+    .track-box { margin: 2px 0 25px; }
+    .track { position: relative; height: 54px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: rgba(5,10,16,.38); }
+    .track-grid { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 calc(4.166% - 1px), rgba(255,255,255,.08) calc(4.166% - 1px) 4.166%); }
+    .segment { position: absolute; top: 8px; height: 38px; border-radius: 7px; padding: 4px 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 10px; color: #17202a; font-weight: 800; }
+    .segment.move { background: var(--blue); } .segment.food { background: var(--copper); } .segment.place { background: var(--jade); } .segment.shop { background: var(--violet); } .segment.event { background: var(--gold); }
+    .track-labels { display: flex; justify-content: space-between; color: var(--muted); font-size: 10px; margin-top: 6px; }
+    .lower-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 22px; }
+    .subpanel { padding: 23px; }
+    .subpanel h2 { font-size: 25px; margin-bottom: 14px; }
+    .stay-panel { margin-top: 22px; padding: 23px; display: grid; grid-template-columns: 1.1fr .9fr; gap: 22px; align-items: center; }
+    .stay-panel h2 { font-size: 25px; margin: 5px 0 9px; }
+    .stay-panel p { color: var(--muted); font-size: 13px; margin: 0; }
+    .stay-facts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .stay-facts span { padding: 7px 10px; border-radius: 999px; background: rgba(120,167,157,.12); border: 1px solid rgba(120,167,157,.32); color: #b9d4ce; font-size: 11px; }
+    .stay-note { border-left: 1px solid var(--jade); padding: 9px 0 9px 16px; color: #cbd3dc; font-size: 12px; line-height: 1.7; }
+    .stay-note a { color: var(--gold); }
+    .link-card { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-top: 1px solid var(--line); }
+    .link-card:first-of-type { border-top: 0; padding-top: 0; }
+    .link-card a { color: var(--ink); text-decoration: none; font-weight: 800; }
+    .link-card a:hover { color: var(--copper); }
+    .link-card p { color: var(--muted); margin: 3px 0 0; font-size: 12px; }
+    .check-group + .check-group { margin-top: 17px; }
+    .check-group h3 { color: var(--gold); font-size: 13px; letter-spacing: .05em; }
+    label.check { display: flex; gap: 10px; align-items: flex-start; margin: 9px 0; color: #cbd3dc; font-size: 13px; cursor: pointer; }
+    label.check input { appearance: none; flex: 0 0 auto; width: 17px; height: 17px; border: 1px solid rgba(225,123,87,.6); border-radius: 4px; margin: 0; position: relative; }
+    label.check input:checked { background: var(--copper); border-color: var(--copper); }
+    label.check input:checked::after { content: "✓"; position: absolute; color: #1b1515; font-weight: 900; font-size: 13px; left: 2px; top: -1px; }
+    label.check input:checked + span { text-decoration: line-through; color: #78828d; }
+    .footer { margin-top: 24px; color: var(--muted); font-size: 12px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer a { color: var(--gold); }
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; padding-bottom: 24px; }
+      .hero-copy::after { font-size: 140px; top: 0; }
+      .layout { grid-template-columns: 1fr; }
+      .day-nav { position: static; display: flex; overflow-x: auto; padding-bottom: 4px; }
+      .day-nav button { min-width: 116px; }
+      .lower-grid { grid-template-columns: 1fr; }
+      .stay-panel { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .shell { width: min(100% - 24px, 1240px); padding-top: 14px; }
+      .day-head, .timeline-wrap, .subpanel { padding-left: 17px; padding-right: 17px; }
+      .day-head-top { flex-direction: column; gap: 8px; }
+      .timeline::before { left: 68px; }
+      .event { grid-template-columns: 58px 22px minmax(0,1fr); }
+      .event-time { font-size: 10px; padding-right: 8px; }
+      .event-card { padding: 11px; }
+      .event-card h3 { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Kansai / 08 days / 2026</div>
+        <h1>關西自由行<br><em>一頁時序誌</em></h1>
+        <p class="hero-sub">大阪、神戶、嵐山、太秦、奈良。用一天一天的節奏，把交通、餐食、限定活動與最後採買放在同一張可以操作的地圖上。</p>
+      </div>
+      <div class="hero-note">10/22 約 14:30 抵達關西機場<br>10/25 Day 4 兩套路線＋19:30 百鬼夜行<br>住宿固定：FDS Plaisir｜10/29 可切換勝林寺</div>
+    </header>
+
+    <div class="toolbar">
+      <div class="toolbar-block">
+        <span class="toolbar-label">10/25 Day 4</span>
+        <div class="switch" role="group" aria-label="10月25日方案切換">
+          <button data-plan-scope="d4" data-plan="A" class="active">A｜水無瀨＋嵐山</button>
+          <button data-plan-scope="d4" data-plan="B">B｜純嵐山</button>
+        </div>
+      </div>
+      <div class="toolbar-block">
+        <span class="toolbar-label">10/29</span>
+        <div class="switch" role="group" aria-label="10月29日方案切換">
+          <button data-plan-scope="d8" data-plan="A" class="active">A｜難波緩衝</button>
+          <button data-plan-scope="d8" data-plan="B">B｜勝林寺</button>
+        </div>
+      </div>
+      <span class="hint" id="planHint">Day 4 方案 A：水無瀨神宮 → 嵐山 → 太秦百鬼夜行</span>
+    </div>
+
+    <main class="layout">
+      <nav class="day-nav" aria-label="選擇日期" id="dayNav"></nav>
+      <section>
+        <article class="panel" id="dayPanel"></article>
+        <section class="panel stay-panel">
+          <div>
+            <div class="section-label">Base camp / Osaka</div>
+            <h2>住宿：FDS Plaisir</h2>
+            <p>固定住在花園町／天下茶屋方向的公寓型住宿，房內有廚房與洗衣機，適合 7 晚長住；每天出門前把交通時間留給回難波的緩衝。</p>
+            <div class="stay-facts"><span>公寓型房間</span><span>廚房</span><span>洗衣機</span><span>自助入住</span><span>約 5 分鐘到天下茶屋站</span></div>
+          </div>
+          <div class="stay-note">注意：公寓型住宿通常沒有每日房務與櫃台服務，請先確認自助入住、行李寄放、毛巾更換與垃圾處理規則。<br><br><a href="https://www.booking.com/hotel/jp/fds-plaisir.html" target="_blank" rel="noreferrer">查看 FDS Plaisir 訂房頁 ↗</a></div>
+        </section>
+        <div class="lower-grid">
+          <section class="panel subpanel">
+            <div class="section-label">Useful links / sources</div>
+            <h2>票券與地點</h2>
+            <div id="links"></div>
+          </section>
+          <section class="panel subpanel">
+            <div class="section-label">Before departure</div>
+            <h2>行前準備</h2>
+            <div id="checklist"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <footer class="footer"><span>離線可用的單一 HTML｜勾選狀態會保存在這台裝置</span><span>勝林寺開放狀況請先確認：<a href="https://shourin-ji.org/" target="_blank" rel="noreferrer">官方網站 ↗</a></span></footer>
+  </div>
+
+  <script>
+    const baseDays = [
+      { id:'d1', date:'10/22', dow:'四', title:'抵達大阪 · LOUTRE · 難波', zone:'大阪', summary:'入境、入住、補衣服，讓第一晚保留一點餘裕。', route:['關西機場','難波','道頓堀'], events:[
+        ['10:30','14:30','move','搭機前往日本','約 14:30 抵達關西機場；起飛時間依實際航班調整。','抵達'],
+        ['14:30','16:30','move','入境與領行李','入境、領行李、購買或儲值 ICOCA。','交通'],
+        ['16:30','17:30','move','南海電鐵至難波','飯店入住，放下行李。','交通'],
+        ['17:30','18:30','place','LOUTRE 大阪店','若航班延誤，移到 10/29 方案 A 的彈性時段。','動物'],
+        ['18:30','19:30','shop','UNIQLO／GU 補衣服','先補基本款，不把第一晚買滿。','購物'],
+        ['19:30','22:00','food','道頓堀晚餐與夜景','福太郎／道頓堀今井；法善寺橫丁散步。','晚餐'] ]},
+      { id:'d2', date:'10/23', dow:'五', title:'神戶動物王國 · Mouriya · 港區煙火', zone:'神戶', summary:'動物王國提早收尾，16:00 神戶牛，傍晚到港區等煙火。', route:['三宮','神戶動物王國','Meriken Park'], events:[
+        ['08:15','10:00','move','大阪 → 神戶動物王國','三宮轉 Port Liner。','交通'],
+        ['10:00','14:20','place','神戶動物王國','優先看當日鳥類、動物互動活動。','景點'],
+        ['14:20','15:20','move','返回三宮','14:10 左右離開最安心，保留找店與換車時間。','交通'],
+        ['16:00','17:30','food','Mouriya 三宮店','已訂位 16:00；餐後直接前往煙火觀賞區。','已訂位'],
+        ['17:30','20:15','event','美利堅公園／Harborland','18:30–18:50 神戶港煙火，依現場人流調整。','限定活動'] ]},
+      { id:'d3', date:'10/24', dow:'六', title:'心齋橋 PARCO · 美國村 · 堀江', zone:'大阪', summary:'購物日由基本款開始，晚間以 HARE 南堀江作為固定節點。', route:['難波','心齋橋','美國村','堀江'], events:[
+        ['09:00','10:00','food','丸福珈琲早餐','昭和喫茶感的開場。','早餐'],
+        ['10:00','13:00','shop','心齋橋筋與 PARCO','UNIQLO／GU、任天堂／寶可夢等。','購物'],
+        ['13:00','14:00','food','北極星蛋包飯','排隊太久就改商場餐廳。','午餐'],
+        ['14:00','17:30','shop','美國村、Orange Street、堀江','古著、日系與工裝品牌。','購物'],
+        ['17:30','18:30','shop','HARE 南堀江','固定巡店時間。','購物'],
+        ['18:30','20:30','food','心齋橋／難波晚餐','不硬排高級餐廳，依體力決定。','晚餐'] ]},
+      { id:'d4a', date:'10/25', dow:'日', title:'方案 A｜水無瀨神宮 · 嵐山 · 百鬼夜行', zone:'京都／大阪', summary:'早上先去水無瀨神宮，再接嵐山與太秦；景點較滿，但動線一路往京都西側前進。', route:['水無瀨神宮','嵐山','東映太秦映畫村'], events:[
+        ['07:30','09:15','move','難波 → 水無瀨','大阪梅田轉阪急京都線；水無瀨站步行約 10 分鐘。','交通'],
+        ['09:15','10:30','place','水無瀨神宮','參拜、御朱印與離宮之水；建議 15:30 前抵達才不會錯過受付。','景點'],
+        ['10:30','11:25','move','水無瀨 → 桂 → 嵐山','阪急京都線到桂，轉嵐山線；預留轉車時間。','交通'],
+        ['11:25','14:25','place','嵐山精華','竹林、野宮神社、天龍寺、渡月橋；不再加猴子公園。','景點'],
+        ['14:25','15:10','move','嵐山 → 太秦','搭嵐電至太秦廣隆寺／撮影所前，再步行到電影村。','交通'],
+        ['15:15','17:20','place','東映太秦映畫村','時代劇場景、忍者與妖怪主題；17:30 互動遊行需事前申請。','景點'],
+        ['17:20','19:20','food','園區晚餐、妖怪活動、卡位','不離園，直接留在大手門廣場周邊。','晚餐'],
+        ['19:30','20:00','event','うずまさ百鬼夜行','觀賞型百鬼夜行，10/25（日）19:30。','限定活動'],
+        ['20:00','22:00','move','太秦 → 大阪','搭嵐電轉阪急，或 JR 太秦→京都→大阪；回程班次前一天確認。','交通'] ]},
+      { id:'d4b', date:'10/25', dow:'日', title:'方案 B｜純嵐山 · 太秦百鬼夜行', zone:'京都', summary:'不去水無瀨神宮，讓嵐山多一點散步與用餐時間，再從容進電影村等 19:30 百鬼夜行。', route:['竹林','天龍寺','渡月橋','東映太秦映畫村'], events:[
+        ['07:45','09:20','move','大阪 → 嵐山','可搭 JR 到嵯峨嵐山，或阪急到嵐山；早到避開人潮。','交通'],
+        ['09:20','10:15','place','竹林小徑、野宮神社','早上拍照最舒服。','景點'],
+        ['10:25','11:35','place','天龍寺庭園','保留完整庭園時間。','景點'],
+        ['11:45','12:45','food','嵯峨豆腐稻／京都勝牛','豆腐料理或牛カツ擇一。','午餐'],
+        ['12:55','14:45','place','渡月橋、保津川、商店街','% Arabica；保留逛店與休息。','散步'],
+        ['14:45','15:25','move','嵐山 → 太秦','嵐電嵐山站 → 太秦廣隆寺／撮影所前。','交通'],
+        ['15:30','17:20','place','東映太秦映畫村','時代劇場景、忍者與妖怪主題。','景點'],
+        ['17:20','19:20','food','園區晚餐、妖怪活動、卡位','不離園，直接留在大手門廣場周邊。','晚餐'],
+        ['19:30','20:00','event','うずまさ百鬼夜行','觀賞型百鬼夜行，10/25（日）19:30。','限定活動'],
+        ['20:00','22:00','move','太秦 → 大阪','末班車與回程路線前一天再確認。','交通'] ]},
+      { id:'d5', date:'10/26', dow:'一', title:'奈良鹿 · 東大寺 · 奈良町', zone:'奈良', summary:'前一晚較晚回，奈良不要追景點數量，天氣好壞決定若草山或春日大社。', route:['興福寺','奈良公園','東大寺','奈良町'], events:[
+        ['08:15','09:30','move','大阪 → 奈良','可視前一晚體力延後 30 分鐘。','交通'],
+        ['09:30','10:20','place','興福寺、猿澤池、奈良鹿','鹿仙貝分次餵。','景點'],
+        ['10:30','11:20','place','依水園','天氣好適合慢走。','景點'],
+        ['11:30','12:40','food','志津香公園店','不可預約；排超過 45 分鐘就換店。','午餐'],
+        ['12:50','15:30','place','東大寺、大佛殿','天氣好走若草山；雨天走春日大社。','景點'],
+        ['15:45','17:00','food','奈良町與中谷堂／天極堂','吃到比等搗麻糬表演重要。','點心'] ]},
+      { id:'d6', date:'10/27', dow:'二', title:'海遊館 · 天保山', zone:'大阪', summary:'全程最佳雨天備案。睡晚一點，午後進館，不把晚餐排死。', route:['天保山','海遊館','難波'], events:[
+        ['09:30','12:30','shop','睡晚一點、早餐、難波補逛','保留恢復體力的早上。','彈性'],
+        ['13:00','16:00','place','海遊館','建議買 13:00／13:15 指定入館時段。','票券'],
+        ['16:00','17:30','place','天保山與摩天輪（可選）','依體力安排，不必全都去。','景點'],
+        ['18:30','20:30','food','返回難波晚餐與休息','海遊館日不追名店。','晚餐'] ]},
+      { id:'d7', date:'10/28', dow:'三', title:'黑門 · 日本橋 · 新世界 · 阿倍野', zone:'大阪', summary:'一路由北往南，避免回頭路；腳痠就把阿倍野夜景刪掉。', route:['黑門市場','日本橋','新世界','阿倍野'], events:[
+        ['09:00','10:30','food','黑門市場早餐與小吃','看清每份、每串、每 100g、時價。','早餐'],
+        ['10:45','14:30','shop','日本橋電電城、二手店','注意欠品、箱傷み、ジャンク、返品不可。','購物'],
+        ['15:30','18:00','food','新世界串炸','八重勝排太久就換達摩。','早晚餐'],
+        ['18:30','20:00','place','阿倍野／天王寺夜景','依體力決定。','景點'] ]},
+      { id:'d8a', date:'10/29', dow:'四', title:'方案 A｜木津市場 · 最後補買', zone:'大阪', summary:'保留最後一天的緩衝，適合補 LOUTRE、HARE、百貨與行李整理。', route:['木津市場','難波','心齋橋'], events:[
+        ['08:00','09:30','food','木津市場早餐','不要買大量冷藏品。','早餐'],
+        ['10:30','13:00','shop','難波／心齋橋最後補買','藥妝、服飾、伴手禮與缺口清單。','購物'],
+        ['14:00','17:30','shop','彈性緩衝','LOUTRE 補去、HARE／百貨、行李整理。','彈性'] ]},
+      { id:'d8b', date:'10/29', dow:'四', title:'方案 B｜木津市場 · 勝林寺', zone:'京都／大阪', summary:'木津市場吃完早餐後前往東福寺塔頭勝林寺，再回難波完成最後採買。', route:['木津市場','東福寺','勝林寺','難波'], events:[
+        ['08:00','09:20','food','木津市場早餐','先吃飯再移動；不要買大量冷藏品。','早餐'],
+        ['09:20','10:35','move','木津市場 → 勝林寺','含步行、轉乘與找入口，抓約 1 小時 15 分鐘。','交通'],
+        ['10:35','11:30','place','勝林寺參拜','花手水／御朱印；前提是當日開放。','需確認'],
+        ['11:30','12:30','move','勝林寺 → 難波','東福寺站步行約 8 分鐘，回程保留轉乘緩衝。','交通'],
+        ['12:30','16:30','shop','難波／心齋橋最後補買','可視需要補去 LOUTRE。','購物'],
+        ['16:30','17:30','place','回飯店整理行李','若勝林寺未開放，改用方案 A。','彈性'] ]}
+    ];
+    const links = [
+      ['LOUTRE 大阪店','動物咖啡廳｜10/22 或 10/29','https://www.loutre-kyoto.com/'],
+      ['Mouriya 三宮店','10/23 16:00 已訂位','https://www.mouriya.co.jp/zh-TW/sannomiya'],
+      ['FDS Plaisir','住宿基地｜花園町／天下茶屋方向的公寓型住宿','https://www.booking.com/hotel/jp/fds-plaisir.html'],
+      ['水無瀨神宮','Day 4 方案 A｜交通、受付與離宮之水','https://www.minasejingu.jp/'],
+      ['東映太秦映畫村','10/25 怪怪 YOKAI 祭／百鬼夜行','https://zh-tw.eigamura.com/feature/yokai2026/'],
+      ['海遊館','10/27 指定入館票與營業時間','https://www.kaiyukan.com/language/chinese_traditional/'],
+      ['勝林寺','10/29 方案 B｜開放狀況需確認','https://shourin-ji.org/']
+    ];
+    const checkGroups = [
+      ['01｜證件與支付',['護照正本、有效期限確認、影本與雲端備份','Visit Japan Web 入境填寫與 QR code','來回機票、FDS Plaisir 住宿確認、旅遊保險','Visa／Mastercard 與少量日圓現金','ICOCA／交通 IC 卡或手機錢包','若自駕：台灣駕照正本＋日文譯本']],
+      ['02｜隨身行李',['手機、充電器、充電線、行動電源（只能隨身攜帶）','常用藥與個人處方藥、藥袋或處方影本','相機、備用電池、耳機','薄外套、摺疊傘、空水壺','護照與重要文件不要放托運行李']],
+      ['03｜行前先下載',['Google Maps／KuliKuli 與離線地圖','Suica 或 PASMO（擇一設定即可）','NAVITIME／Japan Transit Planner','Tabelog 餐廳查詢','航空公司官方 App','FDS Plaisir 自助入住說明與聯絡方式截圖']],
+      ['04｜托運行李',['換洗衣物、內衣、襪子、睡衣','舒適好走的鞋與住宿用拖鞋','盥洗用品、保養品、化妝品','收納袋、購物袋、洗衣袋、夾鏈袋','雨具、帽子、太陽眼鏡','行李箱預留購物空間；帶行李秤']],
+      ['05｜10 月秋季穿搭',['長袖上衣、薄針織、風衣或輕羽絨外套','好走、防滑的鞋；嵐山／奈良每天步行較多','薄圍巾或保暖內搭，早晚溫差備用','雨具與防水收納袋','出發前一週再確認大阪／京都天氣']],
+      ['06｜不要攜帶或要申報',['肉乾、肉鬆、香腸與其他肉類製品','含肉泡麵、調理包或肉類零食','多數生鮮蔬果、植物、種子與土壤','成分不明或含管制成分的藥物','行動電源放隨身行李，不要托運','大額現金或等值物品依日本海關最新規定申報']]
+    ];
+    const transitNotes = {
+      d1: [
+        '關西機場以南海電鐵為主：Rapi:t 或 Airport Express → 南海難波。',
+        '抵達南海難波站後，先在站內處理 ICOCA，再出站找飯店。',
+        '以難波住宿為基準，南海難波到飯店預留步行與找出口時間。',
+        'LOUTRE 大阪店在難波站南側，南海難波步行約 5–10 分鐘。',
+        '難波站周邊步行即可；若去心齋橋可搭御堂筋線 1 站。',
+        '難波站步行到道頓堀與法善寺橫丁，晚餐店家沿線。'
+      ],
+      d2: [
+        '難波住宿建議：大阪難波 → 阪神難波線／阪神本線直通 → 神戶三宮。',
+        '三宮站轉 Port Liner，於「計算科學中心（神戶動物王國・富岳前）」下車，步行到園區。',
+        '原路搭 Port Liner 回三宮；預留月台與轉乘時間。',
+        'Mouriya 三宮店從三宮站步行約 5–10 分鐘，提早抵達找入口。',
+        '三宮到 Meriken Park 可步行約 20–25 分鐘；想省力可搭 Port Loop 或短程計程車。'
+      ],
+      d3: [
+        '丸福珈琲千日前本店從難波步行約 5–10 分鐘。',
+        '難波 → 心齋橋：御堂筋線 1 站，或步行約 15–20 分鐘。',
+        'PARCO、心齋橋筋與美國村以步行串聯，不必頻繁搭車。',
+        '美國村 → Orange Street → 堀江，沿街步行最省轉乘。',
+        'HARE 南堀江在堀江購物線上，直接步行前往。',
+        '晚餐回難波／心齋橋可步行，或搭御堂筋線 1–2 站。'
+      ],
+      d4a: [
+        '難波 → 大阪梅田，轉阪急京都線到水無瀨；公開查詢約 27–35 分鐘，通常在高槻市轉車。',
+        '水無瀨站步行約 10 分鐘；官方受付資料有 9:00–16:00／17:00 差異，建議 15:30 前抵達。',
+        '水無瀨 → 桂約 15 分鐘，再轉阪急嵐山線；預留轉車與月台時間。',
+        '嵐山以竹林、野宮神社、天龍寺、渡月橋為主，景點之間步行串聯。',
+        '嵐山 → 太秦搭嵐電：嵐山站 → 太秦廣隆寺／撮影所前，再步行約 2–5 分鐘。',
+        '東映太秦映畫村園區內步行；10 月週末有夜間營業，先確認入口與當日公告。',
+        '晚餐留在園區，不要離園找餐廳，19:30 前在大手門廣場附近卡位。',
+        '19:30 うずまさ百鬼夜行為觀賞型活動，約 25 分鐘。',
+        '回程可搭嵐電轉阪急，或 JR 太秦→京都→大阪；末班車前一天確認。'
+      ],
+      d4b: [
+        '難波 → JR 大阪／梅田 → JR 京都線到京都 → JR 嵯峨野線至嵯峨嵐山；或搭阪急到嵐山。',
+        '嵯峨嵐山站步行到竹林與野宮神社約 10–15 分鐘。',
+        '竹林、野宮神社、天龍寺之間以步行串聯。',
+        '嵐山午餐區集中在渡月橋與商店街周邊，建議保留坐下來吃飯的時間。',
+        '渡月橋、保津川、商店街與 % Arabica 以步行完成，不要再加猴子公園。',
+        '嵐山 → 太秦搭嵐電：嵐山站 → 太秦廣隆寺／撮影所前，再步行到電影村。',
+        '東映太秦映畫村園區內步行；15:30 左右入村才不會壓縮嵐山。',
+        '晚餐留在園區，不要離園找餐廳，19:30 前在大手門廣場附近卡位。',
+        '19:30 うずまさ百鬼夜行為觀賞型活動，約 25 分鐘。',
+        '回程可搭嵐電轉阪急，或 JR 太秦→京都→大阪；末班車前一天確認。'
+      ],
+      d5: [
+        '難波 → 近鐵奈良：搭近鐵奈良線，大阪難波直達近鐵奈良，約 40–45 分鐘。',
+        '近鐵奈良站出站後步行到興福寺、猿澤池約 5–10 分鐘。',
+        '奈良公園與依水園以步行為主；腳力不足可短程搭市巴士。',
+        '依水園 → 志津香公園店步行約 10–15 分鐘，排隊時不要離隊太遠。',
+        '東大寺、大佛殿與若草山／春日大社依步行動線安排，雨天優先室內與商店街。',
+        '奈良町從奈良公園步行前往；回程走到近鐵奈良站搭原線回難波。'
+      ],
+      d6: [
+        '早上留在難波周邊，直接步行或搭御堂筋線短程移動。',
+        '難波 → 本町轉大阪 Metro 中央線 → 大阪港站，步行約 5–10 分鐘到海遊館。',
+        '海遊館、天保山市場街、摩天輪都在天保山港區，步行即可。',
+        '大阪港站搭中央線回本町，再轉御堂筋線回難波；晚餐不要排跨區。'
+      ],
+      d7: [
+        '黑門市場最近為大阪 Metro／近鐵日本橋站，從 10 號出口步行約 2–5 分鐘。',
+        '黑門 → 日本橋電電城以步行最方便，約 10–15 分鐘；也可從惠美須町站開始逛。',
+        '日本橋 → 新世界：步行約 10–15 分鐘，或搭堺筋線日本橋→惠美須町。',
+        '新世界 → 阿倍野／天王寺：大阪 Metro 御堂筋線動物園前→天王寺 1 站，或步行約 15 分鐘。'
+      ],
+      d8a: [
+        '木津市場靠近大國町站／難波南側；從大國町站步行約 5–10 分鐘。',
+        '難波、心齋橋、梅田最後補買依店家分布選一區，避免跨區拉行李。',
+        '下午維持在難波周邊，方便回飯店整理行李與處理 LOUTRE 備案。'
+      ],
+      d8b: [
+        '木津市場靠近大國町站；吃完後先走回地鐵或難波方向。',
+        '建議用 Google Maps 即時路線：難波／大阪站 → 京都 → JR 奈良線東福寺；從市場離開到勝林寺抓約 1 小時 15 分鐘。',
+        'JR／京阪東福寺站下車後，步行約 8 分鐘到勝林寺；開放狀況須先確認。',
+        '勝林寺回東福寺站後，搭 JR 奈良線回京都再轉大阪，或依即時路線回難波。',
+        '返回難波後，難波與心齋橋以步行或御堂筋線串聯，適合最後採買。',
+        '最後 17:30 前回飯店；若勝林寺未開放，直接改用方案 A。'
+      ]
+    };
+    let state = { day: 'd1', plan: 'A', day4Plan: 'A' };
+    const storageKey = 'kansai-itinerary-checklist-v1';
+    const $ = (s) => document.querySelector(s);
+    function parseMinutes(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
+    function getDay() {
+      if (state.day === 'd4') return baseDays.find(d => d.id === `d4${state.day4Plan.toLowerCase()}`);
+      if (state.day === 'd8') return baseDays.find(d => d.id === `d8${state.plan.toLowerCase()}`);
+      return baseDays.find(d => d.id === state.day);
+    }
+    function renderNav() {
+      const nav = $('#dayNav');
+      const days = baseDays.filter(d => !['d4b','d8b'].includes(d.id));
+      nav.innerHTML = days.map(d => { const dayId = d.id === 'd4a' ? 'd4' : (d.id === 'd8a' ? 'd8' : d.id); return `<button class="${dayId === state.day ? 'active' : ''}" data-day="${dayId}"><strong>${d.date} · Day ${dayId.replace('d','')}</strong><small>${d.zone}｜${d.title.split('｜')[0].split(' · ')[0]}</small></button>`; }).join('');
+      nav.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { state.day = b.dataset.day; render(); }));
+    }
+    function renderTrack(day) {
+      const segments = day.events.map(e => {
+        const start = parseMinutes(e[0]), end = parseMinutes(e[1]);
+        const left = start / 1440 * 100, width = Math.max(1.3, (end-start) / 1440 * 100);
+        return `<div class="segment ${e[2]}" style="left:${left}%;width:${width}%" title="${e[0]}–${e[1]} ${e[3]}">${e[3]}</div>`;
+      }).join('');
+      return `<div class="track-box"><div class="section-label">24 hour rhythm</div><div class="track"><div class="track-grid"></div>${segments}</div><div class="track-labels"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div></div>`;
+    }
+    function renderDay() {
+      const day = getDay();
+      const transit = transitNotes[day.id] || [];
+      const events = day.events.map((e, i) => `<div class="event kind-${e[2]}"><div class="event-time">${e[0]}<br><span>—</span><br>${e[1]}</div><div class="event-dot"></div><div class="event-card"><h3>${e[3]}</h3><p>${e[4]}</p><div class="event-transport"><b>交通</b><span>${transit[i] || '以出發日 Google Maps 即時路線為準。'}</span></div><div class="event-meta"><span class="tag">${e[5]}</span></div></div></div>`).join('');
+      const scheme = state.day === 'd4' ? `方案 ${state.day4Plan}` : (state.day === 'd8' ? `方案 ${state.plan}` : '主行程');
+      $('#dayPanel').innerHTML = `<div class="day-head"><div class="day-head-top"><div><div class="day-date">${day.date}（${day.dow}） · ${day.zone}</div><h2 class="day-title">${day.title}</h2><p class="day-summary">${day.summary}</p></div><span class="tag">${scheme}</span></div><div class="route">${day.route.map(r=>`<span>${r}</span>`).join('')}</div></div><div class="timeline-wrap">${renderTrack(day)}<div class="section-label">Day plan</div><div class="timeline">${events}</div></div>`;
+    }
+    function renderLinks() { $('#links').innerHTML = links.map(l => `<div class="link-card"><div><a href="${l[2]}" target="_blank" rel="noreferrer">${l[0]} ↗</a><p>${l[1]}</p></div></div>`).join(''); }
+    function renderChecklist() {
+      let saved = {}; try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch(e) {}
+      $('#checklist').innerHTML = checkGroups.map((g,gi) => `<div class="check-group"><h3>${g[0]}</h3>${g[1].map((item,ii) => { const id = `c-${gi}-${ii}`; return `<label class="check"><input type="checkbox" data-check="${id}" ${saved[id]?'checked':''}><span>${item}</span></label>`; }).join('')}</div>`).join('');
+      $('#checklist').querySelectorAll('input').forEach(input => input.addEventListener('change', () => { saved[input.dataset.check] = input.checked; localStorage.setItem(storageKey, JSON.stringify(saved)); }));
+    }
+    function render() {
+      document.querySelectorAll('button[data-plan-scope="d4"]').forEach(b => b.classList.toggle('active', b.dataset.plan === state.day4Plan));
+      document.querySelectorAll('button[data-plan-scope="d8"]').forEach(b => b.classList.toggle('active', b.dataset.plan === state.plan));
+      $('#planHint').textContent = state.day === 'd4'
+        ? (state.day4Plan === 'A' ? 'Day 4 方案 A：水無瀨神宮 → 嵐山 → 太秦百鬼夜行' : 'Day 4 方案 B：純嵐山 → 太秦百鬼夜行，節奏較鬆')
+        : (state.day === 'd8' ? (state.plan === 'A' ? '10/29 保留購物、LOUTRE 與行李整理彈性' : '10/29 木津市場後前往勝林寺；開放狀況需先確認') : '可用上方方案切換查看 Day 4 或 10/29 的不同排法');
+      renderNav(); renderDay(); renderLinks(); renderChecklist();
+    }
+    document.querySelectorAll('button[data-plan-scope="d4"]').forEach(b => b.addEventListener('click', () => { state.day4Plan = b.dataset.plan; state.day = 'd4'; render(); }));
+    document.querySelectorAll('button[data-plan-scope="d8"]').forEach(b => b.addEventListener('click', () => { state.plan = b.dataset.plan; state.day = 'd8'; render(); }));
+    render();
+  </script>
+</body>
+</html>
