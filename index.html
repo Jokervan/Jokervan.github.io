@@ -48,6 +48,14 @@
     .hero-copy::after { content: "08"; position: absolute; right: 4%; top: -20%; color: rgba(225,123,87,.11); font-family: Georgia, serif; font-size: 200px; line-height: 1; z-index: -1; }
     .hero-sub { color: var(--muted); max-width: 650px; margin: 0; font-size: 15px; }
     .hero-note { border-left: 1px solid var(--copper); padding: 10px 0 10px 18px; color: #d8d0c2; font-size: 13px; line-height: 1.75; }
+    [hidden] { display: none !important; }
+    .page-tabs { display: flex; gap: 10px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
+    .page-tabs button { border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--muted); min-height: 48px; padding: 12px 20px; font-size: 15px; }
+    .page-tabs button[aria-selected="true"] { border-bottom-color: var(--copper); color: var(--ink); font-weight: 800; }
+    .page-tabs button:hover { color: var(--ink); }
+    .preparation-panel { padding: 26px 28px; }
+    .prep-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
+    .prep-grid .check-group { margin: 0; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.025); }
     .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 8px 0 22px; }
     .toolbar-block { display: flex; gap: 9px; align-items: center; flex-wrap: wrap; }
     .toolbar-label { color: var(--gold); font-size: 11px; letter-spacing: .08em; font-weight: 800; white-space: nowrap; }
@@ -88,6 +96,18 @@
     .event-transport { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; padding-top: 9px; border-top: 1px dashed rgba(234,226,213,.13); color: #c4ced7; font-size: 12px; line-height: 1.55; }
     .event-transport b { flex: 0 0 auto; color: var(--blue); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; padding-top: 1px; }
     .event-transport span { color: #aeb9c4; }
+    .place-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
+    .place-links a { color: var(--blue); font-size: 12px; line-height: 1.5; padding: 5px 8px; border: 1px solid rgba(117,168,200,.25); border-radius: 8px; text-decoration: none; }
+    .place-links a:hover { color: var(--ink); border-color: var(--blue); background: rgba(117,168,200,.09); }
+    a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .day-advice { margin-top: 18px; padding: 14px 16px; border-left: 3px solid var(--jade); background: rgba(120,167,157,.07); border-radius: 0 10px 10px 0; }
+    .day-advice h3 { font-size: 14px; color: #b9d4ce; }
+    .day-advice ul { margin: 8px 0 0; padding-left: 18px; color: #b8c3ce; font-size: 13px; line-height: 1.75; }
+    .priority-panel { padding: 18px 22px; margin-bottom: 22px; }
+    .priority-panel summary { cursor: pointer; color: var(--gold); font-size: 14px; font-weight: 800; }
+    .priority-panel ul { padding-left: 19px; color: #cbd3dc; font-size: 13px; line-height: 1.8; }
+    .priority-panel p, .prep-intro { color: var(--muted); font-size: 12px; line-height: 1.75; }
+    .check-note { color: var(--muted); font-size: 12px; line-height: 1.75; margin: 7px 0; }
     .kind-move .event-dot::before { border-color: var(--blue); }
     .kind-food .event-dot::before { border-color: var(--copper); }
     .kind-place .event-dot::before { border-color: var(--jade); }
@@ -99,7 +119,7 @@
     .segment { position: absolute; top: 8px; height: 38px; border-radius: 7px; padding: 4px 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 10px; color: #17202a; font-weight: 800; }
     .segment.move { background: var(--blue); } .segment.food { background: var(--copper); } .segment.place { background: var(--jade); } .segment.shop { background: var(--violet); } .segment.event { background: var(--gold); }
     .track-labels { display: flex; justify-content: space-between; color: var(--muted); font-size: 10px; margin-top: 6px; }
-    .lower-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 22px; }
+    .lower-grid { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 22px; }
     .subpanel { padding: 23px; }
     .subpanel h2 { font-size: 25px; margin-bottom: 14px; }
     .stay-panel { margin-top: 22px; padding: 23px; display: grid; grid-template-columns: 1.1fr .9fr; gap: 22px; align-items: center; }
@@ -131,6 +151,7 @@
       .day-nav button { min-width: 116px; }
       .lower-grid { grid-template-columns: 1fr; }
       .stay-panel { grid-template-columns: 1fr; }
+      .prep-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 560px) {
       .shell { width: min(100% - 24px, 1240px); padding-top: 14px; }
@@ -141,6 +162,8 @@
       .event-time { font-size: 10px; padding-right: 8px; }
       .event-card { padding: 11px; }
       .event-card h3 { font-size: 16px; }
+      .preparation-panel { padding: 22px 17px; }
+      .prep-grid .check-group { padding: 15px; }
     }
   </style>
 </head>
@@ -152,9 +175,15 @@
         <h1>關西自由行<br><em>一頁時序誌</em></h1>
         <p class="hero-sub">大阪、神戶、嵐山、太秦、奈良。用一天一天的節奏，把交通、餐食、限定活動與最後採買放在同一張可以操作的地圖上。</p>
       </div>
-      <div class="hero-note">10/22 約 14:30 抵達關西機場<br>10/25 Day 4 兩套路線＋19:30 百鬼夜行<br>住宿固定：FDS Plaisir｜10/29 可切換勝林寺</div>
+      <div class="hero-note">10/22 約 14:30 抵達關西機場<br>10/25 Day 4 兩套路線＋19:30 百鬼夜行<br>10/28 晚離開 FDS → 九條南會合｜10/29 全天環球影城</div>
     </header>
 
+    <nav class="page-tabs" role="tablist" aria-label="網頁分頁">
+      <button type="button" id="itineraryTab" role="tab" aria-controls="itineraryView" aria-selected="true" data-view="itinerary">每日行程</button>
+      <button type="button" id="preparationTab" role="tab" aria-controls="preparationView" aria-selected="false" tabindex="-1" data-view="preparation">行前準備 · 物品確認</button>
+    </nav>
+
+    <section id="itineraryView" role="tabpanel" aria-labelledby="itineraryTab">
     <div class="toolbar">
       <div class="toolbar-block">
         <span class="toolbar-label">10/25 Day 4</span>
@@ -163,15 +192,20 @@
           <button data-plan-scope="d4" data-plan="B">B｜純嵐山</button>
         </div>
       </div>
-      <div class="toolbar-block">
-        <span class="toolbar-label">10/29</span>
-        <div class="switch" role="group" aria-label="10月29日方案切換">
-          <button data-plan-scope="d8" data-plan="A" class="active">A｜難波緩衝</button>
-          <button data-plan-scope="d8" data-plan="B">B｜勝林寺</button>
-        </div>
-      </div>
       <span class="hint" id="planHint">Day 4 方案 A：水無瀨神宮 → 嵐山 → 太秦百鬼夜行</span>
     </div>
+
+    <details class="panel priority-panel" open>
+      <summary>目前最需要先確認的 4 件事</summary>
+      <ul>
+        <li>九條南新飯店名稱、完整地址、10/28 會合時間；10/29 晚住哪裡及返台航班日期尚未提供。</li>
+        <li>10/29 USJ：兩人的入場券是否已買？Express Pass 是否含想玩的設施與任天堂園區入場確約？整理券不能保證取得。</li>
+        <li>10/22 LOUTRE 最後受付為 18:00；14:30 落地後還要入境、搭車、到 FDS 放行李，17:30 到店只能視為理想安排。</li>
+        <li>10/25 19:30 百鬼夜行可保留；17:30 參與型遊行需事前審核申請，官方目前列示 9、10 月申請已截止，未申請就排觀賞。</li>
+      </ul>
+      <p>官方資料查核：2026/10/08。時序以日本時間為主；10/22 起飛時間尚未確認，日本比台灣快 1 小時。下方各景點可直接開官方網站或地圖；地圖搜尋不代表已核實營業或已訂位。</p>
+      <div class="place-links"><a href="https://www.loutre-kyoto.com/" target="_blank" rel="noopener noreferrer">LOUTRE 營業公告 ↗</a><a href="https://eigamura.com/feature/yokai2026/" target="_blank" rel="noopener noreferrer">百鬼夜行申請與時段 ↗</a><a href="https://www.usj.co.jp/web/ja/jp/areas/super-nintendo-world" target="_blank" rel="noopener noreferrer">USJ 任天堂園區規則 ↗</a></div>
+    </details>
 
     <main class="layout">
       <nav class="day-nav" aria-label="選擇日期" id="dayNav"></nav>
@@ -180,11 +214,11 @@
         <section class="panel stay-panel">
           <div>
             <div class="section-label">Base camp / Osaka</div>
-            <h2>住宿：FDS Plaisir</h2>
-            <p>固定住在花園町／天下茶屋方向的公寓型住宿，房內有廚房與洗衣機，適合 7 晚長住；每天出門前把交通時間留給回難波的緩衝。</p>
-            <div class="stay-facts"><span>公寓型房間</span><span>廚房</span><span>洗衣機</span><span>自助入住</span><span>約 5 分鐘到天下茶屋站</span></div>
+            <h2>住宿：FDS Plaisir → 九條南附近飯店</h2>
+            <p>FDS Plaisir 訂單仍為 10/22 入住、10/29 退房，但實際於 10/28 晚上提前退房。當晚帶行李前往大阪市西區九條南附近飯店，與同行者會合並入住；10/29 從新飯店出發去環球影城。</p>
+            <div class="stay-facts"><span>FDS 訂到 10/29</span><span>10/28 晚提前退房</span><span>九條南會合</span><span>新飯店名稱／地址待補</span></div>
           </div>
-          <div class="stay-note">注意：公寓型住宿通常沒有每日房務與櫃台服務，請先確認自助入住、行李寄放、毛巾更換與垃圾處理規則。<br><br><a href="https://www.booking.com/hotel/jp/fds-plaisir.html" target="_blank" rel="noreferrer">查看 FDS Plaisir 訂房頁 ↗</a></div>
+          <div class="stay-note">行前確認：告知 FDS 10/28 晚提前離開，確認鑰匙歸還與退房流程。九條南新飯店請補上名稱、完整地址、入住方式與會合時間；移動時段暫估，待地址確定再調整。<br><br><a href="https://www.booking.com/hotel/jp/fds-plaisir.html" target="_blank" rel="noreferrer">查看 FDS Plaisir 訂房頁 ↗</a></div>
         </section>
         <div class="lower-grid">
           <section class="panel subpanel">
@@ -192,47 +226,51 @@
             <h2>票券與地點</h2>
             <div id="links"></div>
           </section>
-          <section class="panel subpanel">
-            <div class="section-label">Before departure</div>
-            <h2>行前準備</h2>
-            <div id="checklist"></div>
-          </section>
         </div>
       </section>
     </main>
-    <footer class="footer"><span>離線可用的單一 HTML｜勾選狀態會保存在這台裝置</span><span>勝林寺開放狀況請先確認：<a href="https://shourin-ji.org/" target="_blank" rel="noreferrer">官方網站 ↗</a></span></footer>
+    </section>
+    <section id="preparationView" role="tabpanel" aria-labelledby="preparationTab" hidden>
+      <article class="panel preparation-panel">
+        <div class="section-label">Before departure / Packing check</div>
+        <h2>行前準備 · 物品確認</h2>
+        <p class="prep-intro">依 10/22–10/29 已知行程整理，包含 10/28 換飯店及 10/29 USJ。先完成票券、住宿與航班，再依各組補齊行李；法規連結與查核日期一併列出。勾選狀態會保存在這台裝置，切回每日行程不會清除。</p>
+        <div id="checklist" class="prep-grid"></div>
+      </article>
+    </section>
+    <footer class="footer"><span>離線可用的單一 HTML｜勾選狀態會保存在這台裝置</span><span>10/29 USJ 官方資訊：<a href="https://www.usj.co.jp/web/zh/tw/" target="_blank" rel="noreferrer">官方網站 ↗</a></span></footer>
   </div>
 
   <script>
     const baseDays = [
       { id:'d1', date:'10/22', dow:'四', title:'抵達大阪 · LOUTRE · 難波', zone:'大阪', summary:'入境、入住、補衣服，讓第一晚保留一點餘裕。', route:['關西機場','難波','道頓堀'], events:[
-        ['10:30','14:30','move','搭機前往日本','約 14:30 抵達關西機場；起飛時間依實際航班調整。','抵達'],
+        ['10:30','14:30','move','搭機前往日本','約 14:30 抵達關西機場（日本時間）；10:30 只是時序占位，實際起飛與航廈請依機票確認。','抵達'],
         ['14:30','16:30','move','入境與領行李','入境、領行李、購買或儲值 ICOCA。','交通'],
-        ['16:30','17:30','move','南海電鐵至難波','飯店入住，放下行李。','交通'],
-        ['17:30','18:30','place','LOUTRE 大阪店','若航班延誤，移到 10/29 方案 A 的彈性時段。','動物'],
+        ['16:30','17:30','move','南海電鐵 → FDS 放行李','目的地是 FDS Plaisir；不要把抵達難波當成已入住。含候車、步行與自助入住，可能超過此時段。','交通'],
+        ['17:30','18:30','place','LOUTRE 大阪店（抵達順利才去）','官方公告 13:00–19:00、最晚 18:00 受付。先確認大阪店與大阪千日前店的分店、入場方式；來不及就挪到 10/24 下午並縮短堀江購物。','動物／彈性'],
         ['18:30','19:30','shop','UNIQLO／GU 補衣服','先補基本款，不把第一晚買滿。','購物'],
-        ['19:30','22:00','food','道頓堀晚餐與夜景','福太郎／道頓堀今井；法善寺橫丁散步。','晚餐'] ]},
+        ['19:30','22:00','food','道頓堀晚餐與夜景','先吃福太郎大阪燒或道頓堀今井烏龍麵，二選一；餐後走法善寺橫丁 → 戎橋 → 道頓堀河岸。排隊超過約 30 分鐘就換店。','晚餐'] ]},
       { id:'d2', date:'10/23', dow:'五', title:'神戶動物王國 · Mouriya · 港區煙火', zone:'神戶', summary:'動物王國提早收尾，16:00 神戶牛，傍晚到港區等煙火。', route:['三宮','神戶動物王國','Meriken Park'], events:[
         ['08:15','10:00','move','大阪 → 神戶動物王國','三宮轉 Port Liner。','交通'],
-        ['10:00','14:20','place','神戶動物王國','優先看當日鳥類、動物互動活動。','景點'],
+        ['10:00','14:20','place','神戶動物王國','入園先看活動表，挑鳥類飛行／動物互動重點，再逛室內外區。園內吃輕午餐；Mouriya 16:00 已訂，14:10 左右開始往出口移動。','景點'],
         ['14:20','15:20','move','返回三宮','14:10 左右離開最安心，保留找店與換車時間。','交通'],
         ['16:00','17:30','food','Mouriya 三宮店','已訂位 16:00；餐後直接前往煙火觀賞區。','已訂位'],
-        ['17:30','20:15','event','美利堅公園／Harborland','18:30–18:50 神戶港煙火，依現場人流調整。','限定活動'] ]},
+        ['17:30','20:15','event','美利堅公園煙火 · 港區夜景','10/23 官方煙火 18:30–18:50；免費觀賞區僅美利堅公園，先到這裡卡位。Harborland 留作煙火後散步，不當作官方免費觀賞區；散場與返大阪另留緩衝。','限定活動'] ]},
       { id:'d3', date:'10/24', dow:'六', title:'心齋橋 PARCO · 美國村 · 堀江', zone:'大阪', summary:'購物日由基本款開始，晚間以 HARE 南堀江作為固定節點。', route:['難波','心齋橋','美國村','堀江'], events:[
         ['09:00','10:00','food','丸福珈琲早餐','昭和喫茶感的開場。','早餐'],
-        ['10:00','13:00','shop','心齋橋筋與 PARCO','UNIQLO／GU、任天堂／寶可夢等。','購物'],
+        ['10:00','13:00','shop','心齋橋筋 · PARCO · 大丸寶可夢','先補 UNIQLO／GU 基本款，再選 PARCO 樓層或大丸心齋橋本館 9F 的 Pokémon Center OSAKA DX。Nintendo OSAKA 在梅田，建議挪到 10/27 上午可選時段。','購物'],
         ['13:00','14:00','food','北極星蛋包飯','排隊太久就改商場餐廳。','午餐'],
-        ['14:00','17:30','shop','美國村、Orange Street、堀江','古著、日系與工裝品牌。','購物'],
+        ['14:00','17:30','shop','美國村、Orange Street、堀江','14:00–15:15 美國村三角公園周邊挑 2–3 家古著店；15:15–16:15 Orange Street 雜貨／咖啡；16:15–17:30 堀江挑品牌店。若補 LOUTRE，刪減其中一區。','購物'],
         ['17:30','18:30','shop','HARE 南堀江','固定巡店時間。','購物'],
-        ['18:30','20:30','food','心齋橋／難波晚餐','不硬排高級餐廳，依體力決定。','晚餐'] ]},
+        ['18:30','20:30','food','心齋橋／難波晚餐','晚餐只選堀江、心齋橋或難波其中一區：想坐下休息選 PARCO 館內餐廳；想吃大阪燒可選千日前福太郎，不再跨去梅田。','晚餐'] ]},
       { id:'d4a', date:'10/25', dow:'日', title:'方案 A｜水無瀨神宮 · 嵐山 · 百鬼夜行', zone:'京都／大阪', summary:'早上先去水無瀨神宮，再接嵐山與太秦；景點較滿，但動線一路往京都西側前進。', route:['水無瀨神宮','嵐山','東映太秦映畫村'], events:[
         ['07:30','09:15','move','難波 → 水無瀨','大阪梅田轉阪急京都線；水無瀨站步行約 10 分鐘。','交通'],
-        ['09:15','10:30','place','水無瀨神宮','參拜、御朱印與離宮之水；建議 15:30 前抵達才不會錯過受付。','景點'],
+        ['09:15','10:30','place','水無瀨神宮','參拜 → 御朱印 → 離宮之水；受付、取水與季節裝飾查官方公告。照片中的風鈴／燈飾不一定在 10 月展出，這段以參拜為主。','景點'],
         ['10:30','11:25','move','水無瀨 → 桂 → 嵐山','阪急京都線到桂，轉嵐山線；預留轉車時間。','交通'],
-        ['11:25','14:25','place','嵐山精華','竹林、野宮神社、天龍寺、渡月橋；不再加猴子公園。','景點'],
+        ['11:25','14:25','place','嵐山精華（含午餐）','11:25–12:10 午餐；12:10–13:20 選天龍寺庭園或竹林＋野宮神社；13:20–14:00 渡月橋，14:00 起往嵐電站。三小時含吃飯，無法每個點都深逛。','景點／午餐'],
         ['14:25','15:10','move','嵐山 → 太秦','搭嵐電至太秦廣隆寺／撮影所前，再步行到電影村。','交通'],
-        ['15:15','17:20','place','東映太秦映畫村','時代劇場景、忍者與妖怪主題；17:30 互動遊行需事前申請。','景點'],
-        ['17:20','19:20','food','園區晚餐、妖怪活動、卡位','不離園，直接留在大手門廣場周邊。','晚餐'],
+        ['15:15','17:20','place','東映太秦映畫村','先逛江戶街景與妖怪活動。17:30 遊行參與需事前申請，官方目前列示 9、10 月已截止；未申請可觀賞，並保留 19:30 百鬼夜行。','景點'],
+        ['17:20','19:20','food','園區晚餐、妖怪活動、卡位','若看 17:30 遊行就先看再吃；先查園內餐廳最後點餐。18:45 左右往烏通／大手門廣場找位置，19:30 等百鬼夜行。','晚餐'],
         ['19:30','20:00','event','うずまさ百鬼夜行','觀賞型百鬼夜行，10/25（日）19:30。','限定活動'],
         ['20:00','22:00','move','太秦 → 大阪','搭嵐電轉阪急，或 JR 太秦→京都→大阪；回程班次前一天確認。','交通'] ]},
       { id:'d4b', date:'10/25', dow:'日', title:'方案 B｜純嵐山 · 太秦百鬼夜行', zone:'京都', summary:'不去水無瀨神宮，讓嵐山多一點散步與用餐時間，再從容進電影村等 19:30 百鬼夜行。', route:['竹林','天龍寺','渡月橋','東映太秦映畫村'], events:[
@@ -242,62 +280,192 @@
         ['11:45','12:45','food','嵯峨豆腐稻／京都勝牛','豆腐料理或牛カツ擇一。','午餐'],
         ['12:55','14:45','place','渡月橋、保津川、商店街','% Arabica；保留逛店與休息。','散步'],
         ['14:45','15:25','move','嵐山 → 太秦','嵐電嵐山站 → 太秦廣隆寺／撮影所前。','交通'],
-        ['15:30','17:20','place','東映太秦映畫村','時代劇場景、忍者與妖怪主題。','景點'],
-        ['17:20','19:20','food','園區晚餐、妖怪活動、卡位','不離園，直接留在大手門廣場周邊。','晚餐'],
+        ['15:30','17:20','place','東映太秦映畫村','先逛江戶街景、妖怪活動；17:30 為另一場參與型遊行，官方目前列示 9、10 月申請已截止，未申請以觀賞為主。','景點'],
+        ['17:20','19:20','food','園區晚餐、妖怪活動、卡位','17:30 遊行觀賞可選；再吃園內晚餐，確認最後點餐。18:45 左右往烏通／大手門廣場找位置。','晚餐'],
         ['19:30','20:00','event','うずまさ百鬼夜行','觀賞型百鬼夜行，10/25（日）19:30。','限定活動'],
         ['20:00','22:00','move','太秦 → 大阪','末班車與回程路線前一天再確認。','交通'] ]},
-      { id:'d5', date:'10/26', dow:'一', title:'奈良鹿 · 東大寺 · 奈良町', zone:'奈良', summary:'前一晚較晚回，奈良不要追景點數量，天氣好壞決定若草山或春日大社。', route:['興福寺','奈良公園','東大寺','奈良町'], events:[
+      { id:'d5', date:'10/26', dow:'一', title:'奈良鹿 · 東大寺 · 奈良町', zone:'奈良', summary:'前一晚較晚回，主線保留興福寺、奈良公園、東大寺、奈良町；若草山或春日大社是加選，雨天縮短戶外散步。', route:['興福寺','奈良公園','依水園','東大寺','奈良町'], events:[
         ['08:15','09:30','move','大阪 → 奈良','可視前一晚體力延後 30 分鐘。','交通'],
-        ['09:30','10:20','place','興福寺、猿澤池、奈良鹿','鹿仙貝分次餵。','景點'],
-        ['10:30','11:20','place','依水園','天氣好適合慢走。','景點'],
-        ['11:30','12:40','food','志津香公園店','不可預約；排超過 45 分鐘就換店。','午餐'],
-        ['12:50','15:30','place','東大寺、大佛殿','天氣好走若草山；雨天走春日大社。','景點'],
-        ['15:45','17:00','food','奈良町與中谷堂／天極堂','吃到比等搗麻糬表演重要。','點心'] ]},
+        ['09:30','10:20','place','興福寺、猿澤池、奈良鹿','猿澤池拍照約 10–15 分鐘、興福寺境內約 20–30 分鐘，再向公園走。國寶館需要額外時間，五重塔景觀依整修公告；只用鹿仙貝餵鹿。','景點'],
+        ['10:30','11:20','place','依水園','以庭園為主，約 40–50 分鐘。官方 9:30–16:30、16:00 最後入園，通常週二休園；雨大或前晚太累可刪這一站。','景點'],
+        ['11:30','12:40','food','志津香公園店','釜飯需等候現煮；先看候位再決定。若等候加用餐會擠壓東大寺，改附近簡餐／麵店；這個時段不代表已訂位。','午餐'],
+        ['12:50','15:30','place','東大寺、大佛殿 · 二月堂','先南大門 → 大佛殿約 60–90 分鐘；剩餘時間選二月堂散步。若草山／春日大社擇一會壓縮奈良町；春日大社路段也在戶外，並非完整雨天備案。','景點'],
+        ['15:45','17:00','food','奈良町與中谷堂／天極堂','奈良町先挑 1–2 條街走，再回近鐵奈良方向吃中谷堂麻糬；天極堂若選東大寺附近分店就提早吃，不要下午再折返。','點心'] ]},
       { id:'d6', date:'10/27', dow:'二', title:'海遊館 · 天保山', zone:'大阪', summary:'全程最佳雨天備案。睡晚一點，午後進館，不把晚餐排死。', route:['天保山','海遊館','難波'], events:[
-        ['09:30','12:30','shop','睡晚一點、早餐、難波補逛','保留恢復體力的早上。','彈性'],
+        ['09:30','12:30','shop','早餐 · 難波補逛／梅田任天堂（可選）','主案睡晚、早餐與難波補買。若一定要 Nintendo OSAKA，改 10:00–11:15 逛梅田官方店，11:15 後午餐並往海遊館；刪掉難波補逛，不把兩區一起排。','彈性'],
         ['13:00','16:00','place','海遊館','建議買 13:00／13:15 指定入館時段。','票券'],
-        ['16:00','17:30','place','天保山與摩天輪（可選）','依體力安排，不必全都去。','景點'],
+        ['16:00','17:30','place','天保山與摩天輪（可選）','海遊館出來先休息，再選摩天輪或港邊散步。下雨、有風或疲累就改天保山市場街室內逛街；不再加觀光船。','景點'],
         ['18:30','20:30','food','返回難波晚餐與休息','海遊館日不追名店。','晚餐'] ]},
-      { id:'d7', date:'10/28', dow:'三', title:'黑門 · 日本橋 · 新世界 · 阿倍野', zone:'大阪', summary:'一路由北往南，避免回頭路；腳痠就把阿倍野夜景刪掉。', route:['黑門市場','日本橋','新世界','阿倍野'], events:[
-        ['09:00','10:30','food','黑門市場早餐與小吃','看清每份、每串、每 100g、時價。','早餐'],
-        ['10:45','14:30','shop','日本橋電電城、二手店','注意欠品、箱傷み、ジャンク、返品不可。','購物'],
-        ['15:30','18:00','food','新世界串炸','八重勝排太久就換達摩。','早晚餐'],
-        ['18:30','20:00','place','阿倍野／天王寺夜景','依體力決定。','景點'] ]},
-      { id:'d8a', date:'10/29', dow:'四', title:'方案 A｜木津市場 · 最後補買', zone:'大阪', summary:'保留最後一天的緩衝，適合補 LOUTRE、HARE、百貨與行李整理。', route:['木津市場','難波','心齋橋'], events:[
-        ['08:00','09:30','food','木津市場早餐','不要買大量冷藏品。','早餐'],
-        ['10:30','13:00','shop','難波／心齋橋最後補買','藥妝、服飾、伴手禮與缺口清單。','購物'],
-        ['14:00','17:30','shop','彈性緩衝','LOUTRE 補去、HARE／百貨、行李整理。','彈性'] ]},
-      { id:'d8b', date:'10/29', dow:'四', title:'方案 B｜木津市場 · 勝林寺', zone:'京都／大阪', summary:'木津市場吃完早餐後前往東福寺塔頭勝林寺，再回難波完成最後採買。', route:['木津市場','東福寺','勝林寺','難波'], events:[
-        ['08:00','09:20','food','木津市場早餐','先吃飯再移動；不要買大量冷藏品。','早餐'],
-        ['09:20','10:35','move','木津市場 → 勝林寺','含步行、轉乘與找入口，抓約 1 小時 15 分鐘。','交通'],
-        ['10:35','11:30','place','勝林寺參拜','花手水／御朱印；前提是當日開放。','需確認'],
-        ['11:30','12:30','move','勝林寺 → 難波','東福寺站步行約 8 分鐘，回程保留轉乘緩衝。','交通'],
-        ['12:30','16:30','shop','難波／心齋橋最後補買','可視需要補去 LOUTRE。','購物'],
-        ['16:30','17:30','place','回飯店整理行李','若勝林寺未開放，改用方案 A。','彈性'] ]}
+      { id:'d7', date:'10/28', dow:'三', title:'黑門 · 日本橋 · 新世界 · 九條南會合', zone:'大阪', summary:'白天照原本大阪行程；晚上提前離開 FDS，帶行李到九條南附近飯店與同行者會合。以下晚間時段暫估，阿倍野夜景視會合時間與體力取捨。', route:['黑門市場','日本橋','新世界','阿倍野（可選）','FDS 退房','九條南附近飯店'], events:[
+        ['09:00','10:30','food','黑門市場早餐與小吃','先繞一圈比價，再選 2–3 樣分享：海鮮、烤物、玉子燒／水果。各店開門不同，09:00 還沒開就先吃早餐；看清每串、每份、每 100g 與時價。','早餐'],
+        ['10:45','14:30','shop','日本橋電電城、二手店（含午餐）','沿堺筋／宅宅路，手辦動漫、二手遊戲、電器三類最多選兩類，各挑 2–3 店；12:30 左右留 45 分鐘午餐。確認欠品、盒損、ジャンク與退貨條件，買電器前看電壓。','購物／午餐'],
+        ['15:30','18:00','food','新世界串炸 · 通天閣周邊散步','15:30–16:30 串炸早晚餐，八重勝或達摩擇一；剩下時間走通天閣外觀與新世界街景。登塔要另計排隊，今天以準時回 FDS 換飯店為優先。','早晚餐'],
+        ['18:00','19:00','place','阿倍野／天王寺夜景（可選）','縮短夜景時間；若同行者較早會合，直接回 FDS 取行李。','可選'],
+        ['19:00','19:45','move','回 FDS 取行李、提前退房','訂單仍到 10/29；今晚收好行李，依住宿指示歸還鑰匙。建議早上先打包。','退房'],
+        ['19:45','20:45','move','FDS → 九條南附近飯店','帶行李移動，暫留 60 分鐘；可搭電車或計程車，待完整地址確認。','交通'],
+        ['20:45','21:30','place','與同行者會合、入住新飯店','先確認會合地點與入住方式，放行李後準備隔天 USJ 門票與隨身包。','會合／入住'] ]},
+      { id:'d8', date:'10/29', dow:'四', title:'環球影城 USJ · 一日制', zone:'大阪', summary:'從九條南附近飯店與同行者出發，全天環球影城；交通先以阪神九條站估排，實際步行時間待新飯店地址確定。開園與入場安排以官方當日公告為準。', route:['九條南附近飯店','阪神九條','西九條','Universal City','SUPER NINTENDO WORLD'], events:[
+        ['06:00','07:00','move','九條南附近飯店 → Universal City','步行至阪神九條站 → 阪神難波線至西九條 → JR 夢咲線至 Universal City；含步行與轉乘先預留 60 分鐘。','交通'],
+        ['07:00','08:30','event','排隊與入園準備（開園依公告）','07:00 到入口、08:30 入園皆為暫估。官方 App 更新完成、登錄全員入場券；入園後依當日規則申請任天堂區整理券／抽選券。','入園'],
+        ['08:30','12:00','place','環球影城上午場','有 Express Pass 就依票面指定時段安排；沒有則先確認任天堂區整理券，再選 1–2 個最想玩的熱門設施。任天堂區不一定上午能進，拿到下午時段就調換。','USJ'],
+        ['12:00','13:00','food','園區午餐','依現場排隊狀況用餐，不離園。','午餐'],
+        ['13:00','18:30','place','環球影城下午場','先列必玩 3 項、可放棄 3 項；再依整理券／Express 時段及 App 等待時間串聯任天堂、哈利波特或小小兵區。雨天選室內設施，水上設施不是避雨方案。','USJ'],
+        ['18:30','20:00','food','園區晚餐與伴手禮','最後採買放在園區內完成。','晚餐'],
+        ['20:00','21:30','move','Universal City → 九條南會合飯店','暫排原路返回九條南；10/29 夜間住宿與後續安排待確認，返程時間依閉園與同行者安排調整。','交通'] ]}
     ];
+    // 網站是資訊來源；地圖連結是地點搜尋，不代表已確認營業或訂位。
+    const places = {
+      airport:['關西機場','https://www.kansai-airport.or.jp/tw/','関西国際空港'],
+      vjw:['Visit Japan Web','https://www.digital.go.jp/policies/visit_japan_web',''],
+      nankai:['南海電鐵','https://www.nankai.co.jp/','南海電鉄 関西空港駅'],
+      fds:['FDS Plaisir','https://www.agoda.com/zh-tw/fds-plaisir/hotel/osaka-jp.html','FDS Plaisir Osaka'],
+      loutre:['LOUTRE 大阪店','https://www.loutre-kyoto.com/アクセス/','LOUTRE 大阪店 難波中2-3-9'],
+      basics:['UNIQLO／GU 難波','','UNIQLO GU なんば'],
+      fukutaro:['福太郎 本店','','福太郎 本店 大阪 千日前'],
+      imai:['道頓堀今井','','道頓堀今井 本店'],
+      hozenji:['法善寺橫丁','','法善寺横丁 大阪'],
+      dotonbori:['戎橋／道頓堀','','戎橋 大阪'],
+      sannomiya:['三宮站','','神戸三宮駅'],
+      animal:['神戶動物王國','https://www.kobe-oukoku.com/tw/calendar','神戸どうぶつ王国'],
+      mouriya:['Mouriya 三宮店','https://www.mouriya.co.jp/zh-TW/sannomiya','モーリヤ 三宮店'],
+      fireworks:['神戶煙火官方','https://minatohanabi.jp/outline/','メリケンパーク'],
+      harbor:['Harborland','','神戸ハーバーランド'],
+      marufuku:['丸福珈琲 千日前本店','https://marufukucoffeeten.com/store/area/kansai/','丸福珈琲店 千日前本店'],
+      parco:['心齋橋 PARCO','https://shinsaibashi.parco.jp/info/','心斎橋PARCO'],
+      pokemon:['寶可夢大阪 DX','https://shop.pokemon.co.jp/en/shop/pokemoncenter-osakadx/','ポケモンセンターオーサカDX'],
+      nintendo:['Nintendo OSAKA（梅田）','https://www.nintendo.com/jp/officialstore/index.html','Nintendo OSAKA 梅田'],
+      hokkyokusei:['北極星 心齋橋本店','https://www.hokkyokusei.online/shoplist','北極星 心斎橋本店'],
+      amerika:['美國村三角公園','','三角公園 アメリカ村 大阪'],
+      orange:['Orange Street','https://osaka-info.jp/experience/ja/osaka/spot/243','オレンジストリート 大阪'],
+      hare:['HARE 南堀江','https://www.dot-st.com/hare/info/store/?store=9305','HARE 南堀江'],
+      minase:['水無瀨神宮','https://www.minasejingu.jp/','水無瀬神宮'],
+      katsura:['阪急桂站','','阪急 桂駅'],
+      arashiyama:['嵐山／渡月橋','','渡月橋 京都'],
+      bamboo:['竹林小徑','','嵐山 竹林の小径'],
+      nonomiya:['野宮神社','https://nonomiya.com/','野宮神社 京都'],
+      tenryuji:['天龍寺','https://www.tenryuji.com/en/visit/index.html','天龍寺 京都'],
+      ine:['嵯峨豆腐稻','','嵯峨とうふ 稲 京都'],
+      katsugyu:['京都勝牛 嵐山店','','京都勝牛 嵐山店'],
+      arabica:['% Arabica 嵐山','','% Arabica Kyoto Arashiyama'],
+      randen:['嵐電嵐山站','','嵐電 嵐山駅'],
+      toei:['太秦映畫村','https://www.eigamura.com/','太秦映画村'],
+      yokai:['百鬼夜行 2026','https://eigamura.com/feature/yokai2026/',''],
+      uzumasa:['JR 太秦站','','太秦駅 京都'],
+      nara:['近鐵奈良站','','近鉄奈良駅'],
+      kohfukuji:['興福寺','https://www.kohfukuji.com/info/info-guide/','興福寺 奈良'],
+      sarusawa:['猿澤池','','猿沢池 奈良'],
+      park:['奈良公園','','奈良公園'],
+      isuien:['依水園','https://www.isuien.or.jp/access','依水園 奈良'],
+      shizuka:['志津香公園店介紹','https://www.naracity-guide.com/spots/129','志津香 公園店 奈良'],
+      todaiji:['東大寺','https://www.todaiji.or.jp/information/','東大寺 大仏殿'],
+      nigatsu:['二月堂','','東大寺 二月堂'],
+      kasuga:['春日大社','https://www.kasugataisha.or.jp/about/basic/','春日大社'],
+      wakakusa:['若草山','','若草山 奈良'],
+      naramachi:['奈良町','','ならまち 奈良'],
+      nakatani:['中谷堂','','中谷堂 奈良'],
+      tengyoku:['天極堂 奈良本店','','天極堂 奈良本店'],
+      namba:['難波補買','','なんば 大阪'],
+      kaiyukan:['海遊館','https://www.kaiyukan.com/info/hours/','海遊館 大阪'],
+      tempozan:['天保山摩天輪','https://tempozan-kanransya.com/','天保山大観覧車'],
+      marketplace:['天保山市場街','','天保山マーケットプレース'],
+      kuromon:['黑門市場地圖','https://kuromon.com/jp/cms/wp-content/uploads/2026/02/kuromonMap_20260224.pdf','黒門市場 大阪'],
+      denden:['電電城／宅宅路','','日本橋 オタロード 大阪'],
+      yaekatsu:['八重勝','','八重勝 新世界'],
+      daruma:['達摩 新世界總本店','','串かつだるま 新世界総本店'],
+      tsutenkaku:['通天閣／新世界','','通天閣 大阪'],
+      harukas:['HARUKAS 300','https://www.abenoharukas-300.jp/observatory/information.html','ハルカス300'],
+      kujoArea:['九條南範圍（非飯店定位）','','大阪府大阪市西区九条南'],
+      kujo:['阪神九條站','https://www.hanshin.co.jp/station/?vm=r','阪神 九条駅 大阪'],
+      nishikujo:['西九條站','','西九条駅 大阪'],
+      usjAccess:['USJ 電車交通','https://www.usj.co.jp/web/zh/tw/access/train','ユニバーサルシティ駅'],
+      usj:['USJ 園區資訊','https://www.usj.co.jp/web/zh/tw/','ユニバーサル・スタジオ・ジャパン'],
+      usjHours:['USJ 營業與日程','https://www.usj.co.jp/web/en/us/park-guide/schedule/park-hour',''],
+      snw:['任天堂園區／整理券','https://www.usj.co.jp/web/ja/jp/areas/super-nintendo-world',''],
+      tickets:['USJ 整理券種類','https://www.usj.co.jp/web/ja/jp/enjoy/numbered-ticket/timed-entry-ticket-category','']
+    };
+    const eventPlaces = {
+      d1:[['airport'],['airport','vjw'],['nankai','fds'],['loutre'],['basics'],['fukutaro','imai','hozenji','dotonbori']],
+      d2:[['sannomiya','animal'],['animal'],['sannomiya'],['mouriya'],['fireworks','harbor']],
+      d3:[['marufuku'],['parco','pokemon','nintendo'],['hokkyokusei'],['amerika','orange'],['hare'],['parco','fukutaro']],
+      d4a:[['minase'],['minase'],['katsura','arashiyama'],['tenryuji','bamboo','nonomiya','arashiyama'],['randen','toei'],['toei','yokai'],['yokai'],['yokai'],['uzumasa']],
+      d4b:[['arashiyama'],['bamboo','nonomiya'],['tenryuji'],['ine','katsugyu'],['arashiyama','arabica'],['randen','toei'],['toei','yokai'],['yokai'],['yokai'],['uzumasa']],
+      d5:[['nara'],['kohfukuji','sarusawa','park'],['isuien'],['shizuka'],['todaiji','nigatsu','kasuga','wakakusa'],['naramachi','nakatani','tengyoku']],
+      d6:[['namba','nintendo'],['kaiyukan'],['tempozan','marketplace'],['namba']],
+      d7:[['kuromon'],['denden'],['yaekatsu','daruma','tsutenkaku'],['harukas'],['fds'],['kujoArea','kujo'],['kujoArea']],
+      d8:[['kujo','nishikujo','usjAccess'],['usjHours','snw','tickets'],['usj','snw'],['usj'],['usj','tickets'],['usj'],['usjAccess','kujoArea']]
+    };
+    const dayAdvice = {
+      d1:['入境日先完成入住；17:30 LOUTRE 不能視為保證能到。若移到 10/24，改下午先 LOUTRE，再回心齋橋／堀江，少逛一區。','16:30 出機場時以 FDS 訂房地址規劃南海停靠站；難波、天下茶屋及飯店之間仍需交通，不適用「難波住宿步行回房」的假設。','第一晚晚餐＋河岸散步約 1.5–2 小時即可，不把兩家名店連吃。'],
+      d2:['固定點是 Mouriya 16:00，建議 15:45 前到店。動物王國下午表演與神戶牛若衝突，優先守住訂位。','Mouriya 用餐若超過 17:30，直接去美利堅公園；不要先繞 Harborland。官方無料區僅美利堅公園。','煙火 18:30–18:50 已由 2026 官方日程核對；天候、交通管制與散場仍以前一天公告為準。'],
+      d3:['主線：心齋橋筋 → PARCO／大丸寶可夢 → 美國村 → Orange Street → HARE。先列 3 家必逛品牌，避免每一家都進。','Nintendo OSAKA 在梅田大阪站旁的官方店，並非心齋橋 PARCO。想去可用 10/27 上午可選時段；Pokémon Cafe 則需另確認預約，不等同寶可夢商店。','14:00–17:30 是分區建議而非訂位；優先保留 HARE，其他區可隨實際購物時間刪減。'],
+      d4a:['方案 A 較趕：水無瀨最晚 10:30 離開；若延誤，嵐山保留午餐＋渡月橋＋竹林，天龍寺庭園改為可選。','嵐山三小時已包含午餐，不能再加小火車、保津川遊船或猴子公園。紅葉狀況看當年，不把十月底預設為盛期。','15:15 進村是目標，17:30 遊行參與型和 19:30 觀賞型是不同場；參與型 9、10 月申請目前列示已截止，仍可安排觀賞。'],
+      d4b:['方案 B 是較從容的選項：竹林／野宮 → 天龍寺 → 午餐 → 渡月橋，14:45 往嵐電出發。','天龍寺庭園、本堂及雲龍圖的參觀範圍／票券不同；先決定只看庭園還是加看建築，避免現場才擴充行程。','百鬼夜行日期與 19:30 時段已查官方頁；約 20:00 出發仍是時序估排，節目結束及回程班次以當日為準。'],
+      d5:['主線不加點就已完整。二月堂是東大寺附近的延伸；若草山、春日大社擇一通常要犧牲部分奈良町時間。','午餐排隊與釜飯現煮都要計入；12:40 是理想收尾，超時先刪加選景點。','雨天可縮短依水園、若草山與公園，保留大佛殿和用餐。春日大社參道也在戶外，不要當成全室內備案。'],
+      d6:['早上恢復體力是主案；Nintendo OSAKA 是替代難波補逛的選項。若梅田排隊拖到 11:30，就結束購物，以 13:00 海遊館為優先。','前往大阪港的移動目前包含在早上彈性時段裡，至少留 45–60 分鐘交通與步行；票面入館時段準時到。','海遊館是雨天選項，但換日期需先檢查票券變更條件；摩天輪有風可能停駛，當日看公告。'],
+      d7:['10/28 早上先打包，把白天購物控制在好攜帶的數量。12:30 午餐已納入日本橋時段，15:30 串炸可當早晚餐。','新世界不用再加通天閣登塔；阿倍野只在不影響退房與會合時保留。雲多、疲累或會合提早就刪夜景。','19:00 回 FDS、20:45 會合都是待地址／時間確認的暫排；新飯店尚未定位，地圖連結只指向九條南範圍。'],
+      d8:['10/29 全天 USJ；06:00 出發、07:00 排隊與 08:30 入園尚未核實當日開園，務必用官方日程調整。','入場券是入園用，Express Pass 是指定設施快速通關；只有特定方案包含任天堂區入場確約，購買前看清票種。','2026/1/5 起任天堂區整理券／抽選券只透過官方 App 發券；預先登錄所有同行者的有效票券，入園後統一申請，無法保證取得。','手機網路與電量要足夠；先選必玩 3 項、可放棄 3 項，按票面時段調整。10/29 晚住宿與返台航班未提供，不預設這天離日。']
+    };
+    function renderPlaceLinks(keys) {
+      return `<div class="place-links">${keys.map(key => {
+        const [label,url,query] = places[key];
+        const official = url ? `<a href="${url}" target="_blank" rel="noopener noreferrer">${label} · 網站 ↗</a>` : '';
+        const map = query ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}" target="_blank" rel="noopener noreferrer">${label} · 地圖 ↗</a>` : '';
+        return official + map;
+      }).join('')}</div>`;
+    }
     const links = [
-      ['LOUTRE 大阪店','動物咖啡廳｜10/22 或 10/29','https://www.loutre-kyoto.com/'],
+      ['LOUTRE 大阪店','動物咖啡廳｜10/22 或其他大阪彈性日','https://www.loutre-kyoto.com/'],
       ['Mouriya 三宮店','10/23 16:00 已訂位','https://www.mouriya.co.jp/zh-TW/sannomiya'],
-      ['FDS Plaisir','住宿基地｜花園町／天下茶屋方向的公寓型住宿','https://www.booking.com/hotel/jp/fds-plaisir.html'],
+      ['FDS Plaisir','訂單到 10/29｜實際 10/28 晚提前退房，轉住九條南附近飯店','https://www.booking.com/hotel/jp/fds-plaisir.html'],
       ['水無瀨神宮','Day 4 方案 A｜交通、受付與離宮之水','https://www.minasejingu.jp/'],
       ['東映太秦映畫村','10/25 怪怪 YOKAI 祭／百鬼夜行','https://zh-tw.eigamura.com/feature/yokai2026/'],
       ['海遊館','10/27 指定入館票與營業時間','https://www.kaiyukan.com/language/chinese_traditional/'],
-      ['勝林寺','10/29 方案 B｜開放狀況需確認','https://shourin-ji.org/']
+      ['Universal Studios Japan','10/29 全天行程｜門票、營業時間與園區公告','https://www.usj.co.jp/web/zh/tw/'],
+      ['USJ 電車交通','九條 → 西九條 → Universal City｜飯店步行段待地址確認','https://www.usj.co.jp/web/zh/tw/access/train'],
+      ['阪神路線圖','阪神難波線九條／西九條／大阪難波','https://www.hanshin.co.jp/station/?vm=r']
     ];
     const checkGroups = [
-      ['01｜證件與支付',['護照正本、有效期限確認、影本與雲端備份','Visit Japan Web 入境填寫與 QR code','來回機票、FDS Plaisir 住宿確認、旅遊保險','Visa／Mastercard 與少量日圓現金','ICOCA／交通 IC 卡或手機錢包','若自駕：台灣駕照正本＋日文譯本']],
-      ['02｜隨身行李',['手機、充電器、充電線、行動電源（只能隨身攜帶）','常用藥與個人處方藥、藥袋或處方影本','相機、備用電池、耳機','薄外套、摺疊傘、空水壺','護照與重要文件不要放托運行李']],
-      ['03｜行前先下載',['Google Maps／KuliKuli 與離線地圖','Suica 或 PASMO（擇一設定即可）','NAVITIME／Japan Transit Planner','Tabelog 餐廳查詢','航空公司官方 App','FDS Plaisir 自助入住說明與聯絡方式截圖']],
+      ['01｜證件與支付',['護照正本、有效期限確認、影本與雲端備份','Visit Japan Web 入境填寫與 QR code（各自確認）','來回機票、FDS 與九條南新飯店住宿確認、旅遊保險','Visa／Mastercard 與少量日圓現金；帶少量零錢','ICOCA／交通 IC 卡或手機錢包，先確認可用與儲值方式','若自駕才需：台灣駕照正本＋日文譯本（目前無自駕安排）','信用卡海外交易設定、緊急掛失電話與保險聯絡方式']],
+      ['02｜隨身行李',['手機、充電器、充電線；行動電源最多 2 個、只能隨身攜帶，確認容量標示與航空公司規定','常用藥與個人處方藥、原包裝／藥袋或處方影本；特殊藥物先查日本攜入規定','相機、備用電池、耳機；備用鋰電池保護接點','薄外套、摺疊傘、空水壺','護照與重要文件不要放托運行李','飛行途中不使用行動電源，也不替行動電源充電','國際線隨身液體先分裝：每容器不超過 100ml，放入不超過 1L 的透明可重封袋；另確認航空公司例外與規定']],
+      ['03｜行前先下載',['Google Maps／KuliKuli 與離線地圖；收藏所有景點','Suica 或 PASMO 非必需；已有 ICOCA 就不必重複裝多張 IC 卡','NAVITIME／Japan Transit Planner','Tabelog 餐廳查詢','航空公司官方 App','USJ 官方 App 更新到最新版，先登錄全員入場券','FDS 自助入住與新飯店地址、入住方式、聯絡方式截圖','eSIM／SIM 或漫遊方案，確認手機支援與啟用日期；USJ 當天要可上網','票券、Mouriya 訂位、航班與 VJW QR 備份，同行者各有一份']],
       ['04｜托運行李',['換洗衣物、內衣、襪子、睡衣','舒適好走的鞋與住宿用拖鞋','盥洗用品、保養品、化妝品','收納袋、購物袋、洗衣袋、夾鏈袋','雨具、帽子、太陽眼鏡','行李箱預留購物空間；帶行李秤']],
-      ['05｜10 月秋季穿搭',['長袖上衣、薄針織、風衣或輕羽絨外套','好走、防滑的鞋；嵐山／奈良每天步行較多','薄圍巾或保暖內搭，早晚溫差備用','雨具與防水收納袋','出發前一週再確認大阪／京都天氣']],
-      ['06｜不要攜帶或要申報',['肉乾、肉鬆、香腸與其他肉類製品','含肉泡麵、調理包或肉類零食','多數生鮮蔬果、植物、種子與土壤','成分不明或含管制成分的藥物','行動電源放隨身行李，不要托運','大額現金或等值物品依日本海關最新規定申報']]
+      ['05｜10 月秋季穿搭',['長袖上衣＋可脫外套分層；厚外套依出發前預報決定','好走、防滑的鞋；嵐山／奈良／USJ 步行較多，先穿熟','薄圍巾或保暖內搭，港邊煙火與太秦晚間備用','雨具與防水收納袋；USJ 可帶輕便雨衣與替換襪','出發前一週與前一天再確認大阪／京都／神戶天氣']],
+      ['06｜不要攜帶或要申報',['不帶肉乾、肉鬆、香腸等肉類製品，攜入限制看動物檢疫官方','不帶含肉零食／泡麵；調理包依成分與動物檢疫規定確認','蔬果、植物、種子與土壤先查植物檢疫；不要直接裝行李帶入','藥物確認成分，管制藥物依官方程序辦理，不能只憑處方就假設可帶','行動電源放隨身行李，不要托運','現金及支票等支付工具合計超過 100 萬日圓等值，需依日本海關申報']],
+      ['07｜10/28 換飯店與會合',['告知 FDS 10/28 晚提前退房，確認鑰匙歸還方式（訂單仍到 10/29）','九條南附近新飯店名稱、完整地址、訂房與入住方式','與同行者確認 10/28 會合時間、地點與聯絡方式','10/28 早上先打包；離開 FDS 前檢查房內、充電器、冰箱與證件','新飯店至阪神九條站步行路線與 10/29 USJ 出發時間','確認 10/29 晚住宿與後續安排','預先選帶行李搭電車或計程車，確認新飯店晚到仍可入住']],
+      ['08｜景點票券與固定時間',['10/23 Mouriya 16:00 訂位確認：分店、姓名、人數、訂位截圖','10/23 神戶動物王國門票與當日活動表；14:10 左右收尾','10/23 神戶煙火 18:30–18:50，免費區美利堅公園，出門前查是否照常舉行','10/25 太秦入村票與可觀賞 19:30 百鬼夜行的入場範圍／時段','10/25 水無瀨／嵐山 A、B 選一，前一天按天氣與體力決定','10/27 海遊館指定入館時段是否已買；確認更改／取消條件','LOUTRE 確認正確分店、受付、預約／入場規則；未到店不要視為已完成']],
+      ['09｜10/29 USJ 專用準備',['全員 10/29 有效入場券與各自 QR code；核對是否只有 Express 而漏買入場券','決定是否購買 Express Pass；核對設施、指定時間與是否含任天堂區入場確約','USJ App 登錄所有同行者的入場券，指定一人統一申請園區整理券／抽選券','確認 10/29 官方營業時間、停運設施與想看的活動時段','與同行者列出必玩 3 項、可放棄 3 項；約定走散時的集合點','帶輕便包、充飽電的手機、合規行動電源、雨衣與好走的鞋','進園前吃早餐；入園後依 App／票面時段安排午餐與休息']],
+      ['10｜出發前最後確認',['補齊去回航班日期、航班號、航廈、報到截止時間與托運額度','10/22 14:30 是日本落地時間；確認台灣起飛時間，不照網頁占位時間出門','確認去程入住地址先填 FDS，九條南新飯店資訊另備份','確認 eSIM 安裝、漫遊設定與緊急聯絡方式；保留台灣門號收訊需求','日本 A 型插頭／100V：充電器看是否支援 100–240V；多帶一條線','藥妝、伴手禮與衣服列缺口清單，10/24 或 10/27 補齊，10/29 沒有市區採買時段','出發前 48 小時再查航班、天氣、煙火／百鬼夜行公告與票券 QR']]
+    ];
+    const prepNotes = [
+      '先處理護照、航班與兩段住宿資料。VJW 是日本數位廳的免費入境／海關服務，不等同簽證；也可按官方規定使用其他申報方式。',
+      '民航局 2026/4/8 起全面實施每人最多 2 個行動電源；只能隨身攜帶，機上不可使用或充電。容量、包裝與液體攜帶仍查實際承運航空公司，長榮連結僅作規範參考。',
+      '一張可用的 IC 卡即可處理大部分大眾運輸；特急或指定席可能另需票券。USJ 需要可用網路，地圖和住宿說明則建議另存離線截圖。',
+      'FDS 有洗衣設備仍請確認使用方式；可先帶約 3–4 天替換衣物再洗，襪子與內衣多備。把充電器和隔天衣物放在易取位置。',
+      '以舒適與分層為主，港邊與晚間比室內逛街更需要外套；這不是天氣預報，厚薄由出發前的官方預報決定。',
+      '肉品和植物是兩種不同檢疫，真空包裝或煮熟不表示都可直接攜入。藥品是否要申請取決於種類、成分與數量，先看厚生勞動省說明。',
+      '10/28 晚換飯店，但 FDS 原訂單仍到 10/29；提前離開不等於已更改訂單。九條南不是西九條，新飯店名稱／地址確定後才能精排步行與轉車。',
+      '目前只有 Mouriya 16:00 是使用者已告知的訂位；其他票券狀態尚未提供。核對的是是否已購買／預約，不代表本頁替你訂好了。',
+      '2026/1/5 起任天堂園區整理券／抽選券只由官方 App 發券；入場券、Express、園區入場確約是不同權益。免費整理券不能保證名額，也不保證上午能進。',
+      '返台日期尚未提供，因此不把 10/29 排成機場日。請優先確認當晚住宿與回程，再檢查行李額度及日本／台灣兩端入境攜帶規定。'
+    ];
+    const prepSources = [
+      [['Visit Japan Web 官方','https://www.digital.go.jp/policies/visit_japan_web']],
+      [['民航局 2026 行動電源規定','https://www.caa.gov.tw/NewsPublish-Content.aspx?a=381&lang=1&nid=2547'],['長榮行李限制（參考）','https://www.evaair.com/zh-tw/fly-prepare/baggage/additional-baggage-information/restrictions/']],
+      [['USJ App／整理券資訊','https://www.usj.co.jp/web/ja/jp/enjoy/numbered-ticket/timed-entry-ticket-category']],
+      [],
+      [['日本氣象廳預報','https://www.jma.go.jp/bosai/forecast/']],
+      [['日本動物檢疫','https://www.maff.go.jp/aqs/tetuzuki/product/aq2.html'],['植物檢疫','https://www.maff.go.jp/pps/'],['藥品攜入規定','https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryou/topics/bukyoku/iyaku/kojinyunyu/faq.html'],['日本海關','https://www.customs.go.jp/kaigairyoko/']],
+      [['FDS 訂房資訊','https://www.agoda.com/zh-tw/fds-plaisir/hotel/osaka-jp.html']],
+      [['神戶煙火 2026','https://minatohanabi.jp/outline/'],['百鬼夜行 2026','https://eigamura.com/feature/yokai2026/']],
+      [['USJ 任天堂園區規則','https://www.usj.co.jp/web/ja/jp/areas/super-nintendo-world'],['USJ 營業日程','https://www.usj.co.jp/web/en/us/park-guide/schedule/park-hour']],
+      [['關西機場','https://www.kansai-airport.or.jp/tw/']]
     ];
     const transitNotes = {
       d1: [
-        '關西機場以南海電鐵為主：Rapi:t 或 Airport Express → 南海難波。',
-        '抵達南海難波站後，先在站內處理 ICOCA，再出站找飯店。',
-        '以難波住宿為基準，南海難波到飯店預留步行與找出口時間。',
-        'LOUTRE 大阪店在難波站南側，南海難波步行約 5–10 分鐘。',
+        '去程航班／航廈待機票確認，14:30 為日本落地時間；出發機場交通及報到要另外提早安排。',
+        '落地後入境 → 領行李 → 海關；再到機場車站處理 IC 卡或車票。順利出關時間可能前後浮動。',
+        '關西機場搭南海電鐵往大阪，以 FDS 訂房地址確認是否在天下茶屋下車最方便；特急另查座席票。飯店不是難波站旁，步行與自助入住都要計入。',
+        'FDS 放行李後再前往難波；LOUTRE 大阪店在難波中 2-3-9，與大阪千日前店是不同地址，請依實際預約分店導航。',
         '難波站周邊步行即可；若去心齋橋可搭御堂筋線 1 站。',
         '難波站步行到道頓堀與法善寺橫丁，晚餐店家沿線。'
       ],
@@ -306,25 +474,25 @@
         '三宮站轉 Port Liner，於「計算科學中心（神戶動物王國・富岳前）」下車，步行到園區。',
         '原路搭 Port Liner 回三宮；預留月台與轉乘時間。',
         'Mouriya 三宮店從三宮站步行約 5–10 分鐘，提早抵達找入口。',
-        '三宮到 Meriken Park 可步行約 20–25 分鐘；想省力可搭 Port Loop 或短程計程車。'
+        '三宮往美利堅公園依導航步行，預留約 30–45 分鐘含人流；當晚交通管制可能影響巴士／計程車，免費觀賞區先選美利堅公園。'
       ],
       d3: [
         '丸福珈琲千日前本店從難波步行約 5–10 分鐘。',
         '難波 → 心齋橋：御堂筋線 1 站，或步行約 15–20 分鐘。',
-        'PARCO、心齋橋筋與美國村以步行串聯，不必頻繁搭車。',
+        '心齋橋／PARCO 往北極星心齋橋本店依地圖步行；選本店而非不同商場的同名分店。',
         '美國村 → Orange Street → 堀江，沿街步行最省轉乘。',
         'HARE 南堀江在堀江購物線上，直接步行前往。',
         '晚餐回難波／心齋橋可步行，或搭御堂筋線 1–2 站。'
       ],
       d4a: [
-        '難波 → 大阪梅田，轉阪急京都線到水無瀨；公開查詢約 27–35 分鐘，通常在高槻市轉車。',
-        '水無瀨站步行約 10 分鐘；官方受付資料有 9:00–16:00／17:00 差異，建議 15:30 前抵達。',
-        '水無瀨 → 桂約 15 分鐘，再轉阪急嵐山線；預留轉車與月台時間。',
+        '從 FDS 先接大阪梅田，步行轉阪急京都線；水無瀨並非所有列車都停靠，依即時路線在高槻市等站轉停站列車。',
+        '水無瀨站步行前往神宮；御朱印受付與取水看官方當日公告，不把 Instagram 季節景觀當作必定有。',
+        '水無瀨 → 桂，依列車停靠站可能轉乘，再接阪急嵐山線到阪急嵐山；含候車、轉月台與步行約留 55 分鐘，誤點就刪景點。',
         '嵐山以竹林、野宮神社、天龍寺、渡月橋為主，景點之間步行串聯。',
         '嵐山 → 太秦搭嵐電：嵐山站 → 太秦廣隆寺／撮影所前，再步行約 2–5 分鐘。',
         '東映太秦映畫村園區內步行；10 月週末有夜間營業，先確認入口與當日公告。',
-        '晚餐留在園區，不要離園找餐廳，19:30 前在大手門廣場附近卡位。',
-        '19:30 うずまさ百鬼夜行為觀賞型活動，約 25 分鐘。',
+        '園內步行；先確認餐廳最後點餐與表演位置，晚餐後往烏通／大手門廣場等候。',
+        '19:30 うずまさ百鬼夜行為觀賞型活動；20:00 是回程時序估排，實際結束、雨天調整與位置看官方公告。',
         '回程可搭嵐電轉阪急，或 JR 太秦→京都→大阪；末班車前一天確認。'
       ],
       d4b: [
@@ -335,8 +503,8 @@
         '渡月橋、保津川、商店街與 % Arabica 以步行完成，不要再加猴子公園。',
         '嵐山 → 太秦搭嵐電：嵐山站 → 太秦廣隆寺／撮影所前，再步行到電影村。',
         '東映太秦映畫村園區內步行；15:30 左右入村才不會壓縮嵐山。',
-        '晚餐留在園區，不要離園找餐廳，19:30 前在大手門廣場附近卡位。',
-        '19:30 うずまさ百鬼夜行為觀賞型活動，約 25 分鐘。',
+        '園內步行；先查餐廳最後點餐，18:45 左右往烏通／大手門廣場。',
+        '19:30 うずまさ百鬼夜行為觀賞型活動；20:00 是回程時序估排，結束與雨天調整以當日公告為準。',
         '回程可搭嵐電轉阪急，或 JR 太秦→京都→大阪；末班車前一天確認。'
       ],
       d5: [
@@ -344,12 +512,12 @@
         '近鐵奈良站出站後步行到興福寺、猿澤池約 5–10 分鐘。',
         '奈良公園與依水園以步行為主；腳力不足可短程搭市巴士。',
         '依水園 → 志津香公園店步行約 10–15 分鐘，排隊時不要離隊太遠。',
-        '東大寺、大佛殿與若草山／春日大社依步行動線安排，雨天優先室內與商店街。',
-        '奈良町從奈良公園步行前往；回程走到近鐵奈良站搭原線回難波。'
+        '志津香附近走往南大門 → 大佛殿 → 二月堂。若選春日大社／若草山要增加戶外步行，不適合用來取代室內雨天安排。',
+        '東大寺往奈良町是較長的步行段；中谷堂在回近鐵奈良方向可串聯，天極堂奈良本店則在東大寺側，避免折返。'
       ],
       d6: [
-        '早上留在難波周邊，直接步行或搭御堂筋線短程移動。',
-        '難波 → 本町轉大阪 Metro 中央線 → 大阪港站，步行約 5–10 分鐘到海遊館。',
+        '主案難波附近步行；選 Nintendo OSAKA 才前往梅田。11:15 左右離店並預留午餐與往海遊館的交通，兩個購物區擇一。',
+        '難波／梅田搭御堂筋線到本町，轉中央線往大阪港，依海遊館官方地圖步行入館；交通要放在 13:00 票面時段之前。',
         '海遊館、天保山市場街、摩天輪都在天保山港區，步行即可。',
         '大阪港站搭中央線回本町，再轉御堂筋線回難波；晚餐不要排跨區。'
       ],
@@ -357,35 +525,49 @@
         '黑門市場最近為大阪 Metro／近鐵日本橋站，從 10 號出口步行約 2–5 分鐘。',
         '黑門 → 日本橋電電城以步行最方便，約 10–15 分鐘；也可從惠美須町站開始逛。',
         '日本橋 → 新世界：步行約 10–15 分鐘，或搭堺筋線日本橋→惠美須町。',
-        '新世界 → 阿倍野／天王寺：大阪 Metro 御堂筋線動物園前→天王寺 1 站，或步行約 15 分鐘。'
+        '新世界 → 阿倍野／天王寺：大阪 Metro 御堂筋線動物園前→天王寺 1 站，或步行約 15 分鐘；若需提早會合可略過夜景。',
+        '從天王寺／新世界回 FDS 取行李，依即時導航選車；本時段包含回飯店、最後整理與退房。',
+        '帶行李可選計程車直達新飯店；電車備案為天下茶屋 → 南海難波，步行轉大阪難波 → 阪神難波線九條，再步行至飯店。完整地址未定，先保留 60 分鐘。',
+        '抵達九條南附近飯店與同行者會合；飯店入口、櫃台時間與自助入住方式先確認。'
       ],
-      d8a: [
-        '木津市場靠近大國町站／難波南側；從大國町站步行約 5–10 分鐘。',
-        '難波、心齋橋、梅田最後補買依店家分布選一區，避免跨區拉行李。',
-        '下午維持在難波周邊，方便回飯店整理行李與處理 LOUTRE 備案。'
-      ],
-      d8b: [
-        '木津市場靠近大國町站；吃完後先走回地鐵或難波方向。',
-        '建議用 Google Maps 即時路線：難波／大阪站 → 京都 → JR 奈良線東福寺；從市場離開到勝林寺抓約 1 小時 15 分鐘。',
-        'JR／京阪東福寺站下車後，步行約 8 分鐘到勝林寺；開放狀況須先確認。',
-        '勝林寺回東福寺站後，搭 JR 奈良線回京都再轉大阪，或依即時路線回難波。',
-        '返回難波後，難波與心齋橋以步行或御堂筋線串聯，適合最後採買。',
-        '最後 17:30 前回飯店；若勝林寺未開放，直接改用方案 A。'
+      d8: [
+        '從新飯店步行到阪神九條站，搭阪神難波線往尼崎方向至西九條（1 站）；出閘轉 JR 夢咲線往櫻島方向，於 Universal City 下車步行至 USJ。別誤入大阪 Metro 九條站；60 分鐘為含步行與候車的暫估。',
+        '入口排隊時間依 10/29 官方開園調整；2026/1/5 起任天堂區整理券／抽選券透過官方 App 發券，不能把現場人工取券當備案。',
+        '園內步行；優先依 Express 或已取得整理券的指定時段前往。任天堂區時段若在下午，上午改玩其他必玩項目。',
+        '午餐留在園區，不離園；依當日人流選餐廳。',
+        '下午以官方 App 看即時等待時間，雨天優先室內設施。',
+        '園區內餐廳與商店集中，伴手禮最後一起買。',
+        '回程 JR Universal City → 西九條，出閘轉阪神難波線往大阪難波方向 → 九條，再步行回會合飯店；10/29 晚住宿待確認，末班車與閉園時間前一天確認。'
       ]
     };
-    let state = { day: 'd1', plan: 'A', day4Plan: 'A' };
-    const storageKey = 'kansai-itinerary-checklist-v1';
+    let state = { day: 'd1', day4Plan: 'A' };
+    const storageKey = 'kansai-itinerary-checklist-v2';
+    // 只遷移內容未變的項目；改寫的準備事項需要重新確認。
+    const legacyCheckItems = {
+      'c-0-0':'護照正本、有效期限確認、影本與雲端備份',
+      'c-1-3':'薄外套、摺疊傘、空水壺', 'c-1-4':'護照與重要文件不要放托運行李',
+      'c-2-2':'NAVITIME／Japan Transit Planner', 'c-2-3':'Tabelog 餐廳查詢', 'c-2-4':'航空公司官方 App',
+      'c-3-0':'換洗衣物、內衣、襪子、睡衣', 'c-3-1':'舒適好走的鞋與住宿用拖鞋',
+      'c-3-2':'盥洗用品、保養品、化妝品', 'c-3-3':'收納袋、購物袋、洗衣袋、夾鏈袋',
+      'c-3-4':'雨具、帽子、太陽眼鏡', 'c-3-5':'行李箱預留購物空間；帶行李秤',
+      'c-5-4':'行動電源放隨身行李，不要托運',
+      'c-6-0':'告知 FDS 10/28 晚提前退房，確認鑰匙歸還方式（訂單仍到 10/29）',
+      'c-6-1':'九條南附近新飯店名稱、完整地址、訂房與入住方式',
+      'c-6-2':'與同行者確認 10/28 會合時間、地點與聯絡方式',
+      'c-6-3':'10/28 早上先打包；離開 FDS 前檢查房內、充電器、冰箱與證件',
+      'c-6-4':'新飯店至阪神九條站步行路線與 10/29 USJ 出發時間',
+      'c-6-5':'確認 10/29 晚住宿與後續安排'
+    };
     const $ = (s) => document.querySelector(s);
     function parseMinutes(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
     function getDay() {
       if (state.day === 'd4') return baseDays.find(d => d.id === `d4${state.day4Plan.toLowerCase()}`);
-      if (state.day === 'd8') return baseDays.find(d => d.id === `d8${state.plan.toLowerCase()}`);
       return baseDays.find(d => d.id === state.day);
     }
     function renderNav() {
       const nav = $('#dayNav');
-      const days = baseDays.filter(d => !['d4b','d8b'].includes(d.id));
-      nav.innerHTML = days.map(d => { const dayId = d.id === 'd4a' ? 'd4' : (d.id === 'd8a' ? 'd8' : d.id); return `<button class="${dayId === state.day ? 'active' : ''}" data-day="${dayId}"><strong>${d.date} · Day ${dayId.replace('d','')}</strong><small>${d.zone}｜${d.title.split('｜')[0].split(' · ')[0]}</small></button>`; }).join('');
+      const days = baseDays.filter(d => !['d4b'].includes(d.id));
+      nav.innerHTML = days.map(d => { const dayId = d.id === 'd4a' ? 'd4' : d.id; return `<button class="${dayId === state.day ? 'active' : ''}" data-day="${dayId}"><strong>${d.date} · Day ${dayId.replace('d','')}</strong><small>${d.zone}｜${d.title.split('｜')[0].split(' · ')[0]}</small></button>`; }).join('');
       nav.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { state.day = b.dataset.day; render(); }));
     }
     function renderTrack(day) {
@@ -399,26 +581,58 @@
     function renderDay() {
       const day = getDay();
       const transit = transitNotes[day.id] || [];
-      const events = day.events.map((e, i) => `<div class="event kind-${e[2]}"><div class="event-time">${e[0]}<br><span>—</span><br>${e[1]}</div><div class="event-dot"></div><div class="event-card"><h3>${e[3]}</h3><p>${e[4]}</p><div class="event-transport"><b>交通</b><span>${transit[i] || '以出發日 Google Maps 即時路線為準。'}</span></div><div class="event-meta"><span class="tag">${e[5]}</span></div></div></div>`).join('');
-      const scheme = state.day === 'd4' ? `方案 ${state.day4Plan}` : (state.day === 'd8' ? `方案 ${state.plan}` : '主行程');
-      $('#dayPanel').innerHTML = `<div class="day-head"><div class="day-head-top"><div><div class="day-date">${day.date}（${day.dow}） · ${day.zone}</div><h2 class="day-title">${day.title}</h2><p class="day-summary">${day.summary}</p></div><span class="tag">${scheme}</span></div><div class="route">${day.route.map(r=>`<span>${r}</span>`).join('')}</div></div><div class="timeline-wrap">${renderTrack(day)}<div class="section-label">Day plan</div><div class="timeline">${events}</div></div>`;
+      const events = day.events.map((e, i) => `<div class="event kind-${e[2]}"><div class="event-time">${e[0]}<br><span>—</span><br>${e[1]}</div><div class="event-dot"></div><div class="event-card"><h3>${e[3]}</h3><p>${e[4]}</p><div class="event-transport"><b>交通</b><span>${transit[i] || '以出發日 Google Maps 即時路線為準。'}</span></div>${renderPlaceLinks(eventPlaces[day.id][i])}<div class="event-meta"><span class="tag">${e[5]}</span></div></div></div>`).join('');
+      const advice = `<div class="day-advice"><h3>這天怎麼排 · 建議與待確認</h3><ul>${dayAdvice[day.id].map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
+      const scheme = state.day === 'd4' ? `方案 ${state.day4Plan}` : '主行程';
+      $('#dayPanel').innerHTML = `<div class="day-head"><div class="day-head-top"><div><div class="day-date">${day.date}（${day.dow}） · ${day.zone}</div><h2 class="day-title">${day.title}</h2><p class="day-summary">${day.summary}</p></div><span class="tag">${scheme}</span></div><div class="route">${day.route.map(r=>`<span>${r}</span>`).join('')}</div>${advice}</div><div class="timeline-wrap">${renderTrack(day)}<div class="section-label">Day plan</div><div class="timeline">${events}</div></div>`;
     }
     function renderLinks() { $('#links').innerHTML = links.map(l => `<div class="link-card"><div><a href="${l[2]}" target="_blank" rel="noreferrer">${l[0]} ↗</a><p>${l[1]}</p></div></div>`).join(''); }
     function renderChecklist() {
-      let saved = {}; try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch(e) {}
-      $('#checklist').innerHTML = checkGroups.map((g,gi) => `<div class="check-group"><h3>${g[0]}</h3>${g[1].map((item,ii) => { const id = `c-${gi}-${ii}`; return `<label class="check"><input type="checkbox" data-check="${id}" ${saved[id]?'checked':''}><span>${item}</span></label>`; }).join('')}</div>`).join('');
-      $('#checklist').querySelectorAll('input').forEach(input => input.addEventListener('change', () => { saved[input.dataset.check] = input.checked; localStorage.setItem(storageKey, JSON.stringify(saved)); }));
+      let saved = {};
+      try {
+        const current = localStorage.getItem(storageKey);
+        if (current) saved = JSON.parse(current);
+        else {
+          const legacy = JSON.parse(localStorage.getItem('kansai-itinerary-checklist-v1') || '{}');
+          Object.entries(legacyCheckItems).forEach(([id,item]) => { if (legacy[id]) saved[encodeURIComponent(item)] = true; });
+          localStorage.setItem(storageKey, JSON.stringify(saved));
+        }
+      } catch(e) {}
+      $('#checklist').innerHTML = checkGroups.map((g,gi) => `<div class="check-group"><h3>${g[0]}</h3><p class="check-note">${prepNotes[gi]}</p>${g[1].map(item => { const id = encodeURIComponent(item); return `<label class="check"><input type="checkbox" data-check="${id}" ${saved[id]?'checked':''}><span>${item}</span></label>`; }).join('')}<div class="place-links">${prepSources[gi].map(([label,url])=>`<a href="${url}" target="_blank" rel="noopener noreferrer">${label} ↗</a>`).join('')}</div></div>`).join('');
+      $('#checklist').querySelectorAll('input').forEach(input => input.addEventListener('change', () => { saved[input.dataset.check] = input.checked; try { localStorage.setItem(storageKey, JSON.stringify(saved)); } catch(e) {} }));
+    }
+    function setView(view) {
+      document.querySelectorAll('button[data-view]').forEach(button => {
+        const active = button.dataset.view === view;
+        button.setAttribute('aria-selected', String(active));
+        button.tabIndex = active ? 0 : -1;
+      });
+      $('#itineraryView').hidden = view !== 'itinerary';
+      $('#preparationView').hidden = view !== 'preparation';
     }
     function render() {
       document.querySelectorAll('button[data-plan-scope="d4"]').forEach(b => b.classList.toggle('active', b.dataset.plan === state.day4Plan));
-      document.querySelectorAll('button[data-plan-scope="d8"]').forEach(b => b.classList.toggle('active', b.dataset.plan === state.plan));
       $('#planHint').textContent = state.day === 'd4'
         ? (state.day4Plan === 'A' ? 'Day 4 方案 A：水無瀨神宮 → 嵐山 → 太秦百鬼夜行' : 'Day 4 方案 B：純嵐山 → 太秦百鬼夜行，節奏較鬆')
-        : (state.day === 'd8' ? (state.plan === 'A' ? '10/29 保留購物、LOUTRE 與行李整理彈性' : '10/29 木津市場後前往勝林寺；開放狀況需先確認') : '可用上方方案切換查看 Day 4 或 10/29 的不同排法');
+        : '10/29 全天 Universal Studios Japan；門票、開園時間與整理券以官方公告為準';
       renderNav(); renderDay(); renderLinks(); renderChecklist();
     }
     document.querySelectorAll('button[data-plan-scope="d4"]').forEach(b => b.addEventListener('click', () => { state.day4Plan = b.dataset.plan; state.day = 'd4'; render(); }));
-    document.querySelectorAll('button[data-plan-scope="d8"]').forEach(b => b.addEventListener('click', () => { state.plan = b.dataset.plan; state.day = 'd8'; render(); }));
+    const viewTabs = [...document.querySelectorAll('button[data-view]')];
+    viewTabs.forEach((button, index) => {
+      button.addEventListener('click', () => setView(button.dataset.view));
+      button.addEventListener('keydown', event => {
+        let target;
+        if (event.key === 'ArrowRight') target = (index + 1) % viewTabs.length;
+        else if (event.key === 'ArrowLeft') target = (index - 1 + viewTabs.length) % viewTabs.length;
+        else if (event.key === 'Home') target = 0;
+        else if (event.key === 'End') target = viewTabs.length - 1;
+        else return;
+        event.preventDefault();
+        setView(viewTabs[target].dataset.view);
+        viewTabs[target].focus();
+      });
+    });
     render();
   </script>
 </body>
